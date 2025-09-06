@@ -5,9 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import QuestPage from "./pages/QuestPage"; // 👈 import new page
-import Login from "./pages/login" // ✅ Now matches Login.tsx
-
+import QuestPage from "./pages/QuestPage";
+import Login from "./pages/login"; 
+import LevelUp from "./pages/LevelUp"; // 👈 import new page
 
 const queryClient = new QueryClient();
 
@@ -19,8 +19,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/quest" element={<QuestPage />} /> {/* 👈 new route */}
-          <Route path="/Login" element={<Login />} /> 
+          <Route path="/quest" element={<QuestPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/levelup" element={<LevelUp />} /> {/* 👈 new route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
