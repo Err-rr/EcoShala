@@ -10,6 +10,7 @@ import Login from "./pages/login";
 import LevelUp from "./pages/LevelUp";
 import ToDo from "./pages/ToDo";
 import Notes from "./pages/Notes";
+import Signup from "./pages/signup";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/quest" element={<QuestPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/levelup" element={<LevelUp />} /> 
+          <Route path="/levelup" element={<LevelUp />} />
+          <Route path="/Signup" element={<Signup />} /> 
           <Route path="/todo" element={<ToDo />} />
           <Route path="/notes" element={<Notes />} /> {/* ✅ fixed */}
           <Route path="*" element={<NotFound />} />
