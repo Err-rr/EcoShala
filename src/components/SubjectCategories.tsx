@@ -5,9 +5,9 @@ export const SubjectCategories = () => {
   const navigate = useNavigate();
 
   const sections = [
-    { name: "Lectures", icon: BookOpen, color: "bg-eco-green", path: "/levelup" },
-    { name: "Quiz", icon: HelpCircle, color: "bg-eco-blue" },
-    { name: "To-Do", icon: CheckSquare, color: "bg-eco-yellow" },
+    { name: "Level-Up", icon: BookOpen, color: "bg-eco-green", path: "/levelup" },
+    { name: "Quiz", icon: HelpCircle, color: "bg-eco-blue"},
+    { name: "To-Do", icon: CheckSquare, color: "bg-eco-yellow", path: "/todo" },
     { name: "Notes", icon: FileText, color: "bg-eco-brown" }
   ];
 
