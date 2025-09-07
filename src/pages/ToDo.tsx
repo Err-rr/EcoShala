@@ -4,14 +4,14 @@ import { Plus, CheckCircle2, Circle, Target, List } from 'lucide-react';
 const ToDo = () => {
   const [activeTab, setActiveTab] = useState('daily');
   const [dailyChallenges, setDailyChallenges] = useState([
-    { id: 1, text: 'Drink 8 glasses of water', completed: false },
-    { id: 2, text: 'Exercise for 30 minutes', completed: false },
-    { id: 3, text: 'Read for 20 minutes', completed: false },
-    { id: 4, text: 'Meditate for 10 minutes', completed: false }
+    { id: 1, text: 'Complete Level-up', completed: false },
+    { id: 2, text: 'Complete Daily Challanges', completed: false },
+    { id: 3, text: 'Plant 1 tree', completed: false },
+    { id: 4, text: 'Play 1 Game', completed: false }
   ]);
   const [customTodos, setCustomTodos] = useState([
-    { id: 1, text: 'Buy groceries', completed: false },
-    { id: 2, text: 'Call mom', completed: true }
+    { id: 1, text: 'Complete Notes ', completed: false },
+    { id: 2, text: 'Boost Level', completed: true }
   ]);
   const [newTodo, setNewTodo] = useState('');
 
