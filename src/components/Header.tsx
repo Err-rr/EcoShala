@@ -28,9 +28,11 @@ export const Header = () => {
           </Link>
 
 
-          <Button className="bg-eco-green text-white hover:bg-eco-green/90">
-            Signup
-          </Button>
+            <Link to="/signup">
+              <Button className="bg-eco-green text-white hover:bg-eco-green/90">
+                Signup
+              </Button>
+          </Link>
         </div>
       </div>
     </header>
