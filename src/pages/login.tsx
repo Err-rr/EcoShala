@@ -12,7 +12,13 @@ export default function EcoShalaLogin() {
  const handleGoogleLogin = () => console.log('Google login attempted');
 
  return (
-   <div className="min-h-screen flex flex-col overflow-hidden relative bg-gradient-to-br from-green-50 to-blue-50">
+   <div
+     className="min-h-screen flex flex-col overflow-hidden relative"
+     style={{
+       background:
+         'radial-gradient(ellipse at center, #dbeefc 0%, #d6fae6 30%, #b5e0d1 100%)'
+     }}
+   >
      {/* Content */}
      <div className="relative z-10 flex-1 flex flex-col">
        {/* Header */}
