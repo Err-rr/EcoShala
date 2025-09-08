@@ -4,8 +4,7 @@ export const Footer = () => {
     { name: "Rewards", href: "#" },
     { name: "Community", href: "#" },
     { name: "About", href: "#" },
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" }
+    { name: "Privacy Policy", href: "#" },
   ];
 
   return (
@@ -31,7 +30,7 @@ export const Footer = () => {
         </div>
         
         <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/50">
-          <p>&copy; 2024 EcoQuest. All rights reserved.</p>
+          <p>&copy; Made by Team VorteX with 💚</p>
         </div>
       </div>
     </footer>
