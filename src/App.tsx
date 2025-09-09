@@ -11,6 +11,7 @@ import LevelUp from "./pages/LevelUp";
 import ToDo from "./pages/ToDo";
 import Notes from "./pages/Notes";
 import Signup from "./pages/signup";
+import GameOne from "./pages/GameOne";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/todo" element={<ToDo />} />
           <Route path="/notes" element={<Notes />} /> {/* ✅ fixed */}
           <Route path="*" element={<NotFound />} />
+          <Route path="/game" element={<GameOne />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
@@ -36,3 +38,4 @@ const App = () => (
 );
 
 export default App;
+
