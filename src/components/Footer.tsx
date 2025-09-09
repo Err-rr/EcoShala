@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
+
 export const Footer = () => {
   const footerLinks = [
-    { name: "Leaderboard", href: "#" },
-    { name: "Rewards", href: "#" },
-    { name: "Community", href: "#" },
-    { name: "About", href: "#" },
-    { name: "Privacy Policy", href: "#" },
+    { name: "Leaderboard", href: "/leaderboard" },
+    { name: "Rewards", href: "/rewards" },
+    { name: "Community", href: "/community" },
+    { name: "About", href: "/about" },
+    { name: "Privacy Policy", href: "/privacy" },
   ];
 
   return (
@@ -13,22 +15,24 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <h3 className="text-2xl font-bold text-eco-green">EcoQuest</h3>
-            <p className="text-white/70 mt-2">Making the planet greener, one quest at a time</p>
+            <p className="text-white/70 mt-2">
+              Making the planet greener, one quest at a time
+            </p>
           </div>
-          
+
           <div className="flex flex-wrap gap-6">
             {footerLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className="text-white/70 hover:text-eco-green transition-colors"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
-        
+
         <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/50">
           <p>&copy; Made by Team VorteX with 💚</p>
         </div>

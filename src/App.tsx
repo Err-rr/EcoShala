@@ -13,6 +13,7 @@ import Notes from "./pages/Notes";
 import Signup from "./pages/signup";
 import GameOne from "./pages/GameOne";
 import Activity from "./pages/Activity"
+import Leaderboard from "./pages/leaderboard";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path="/game" element={<GameOne />} />
           <Route path="/activity" element={<Activity />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
