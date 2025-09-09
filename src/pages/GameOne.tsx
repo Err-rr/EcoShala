@@ -1,289 +1,357 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Leaf, MapPin, Trophy, RotateCcw, Star } from 'lucide-react';
 
-interface GameItem {
-  id: number;
+interface Environment {
+  id: string;
   name: string;
-  type: 'organic' | 'recyclable' | 'plastic' | 'general';
-  description: string;
-  isConfusing?: boolean;
-}
-
-interface Dustbin {
-  type: 'organic' | 'recyclable' | 'plastic' | 'general';
-  name: string;
+  icon: string;
   color: string;
-  label: string;
-  description: string;
+  bgGradient: string;
+  position: { x: number; y: number };
+  completed: boolean;
 }
 
-const EcoSortingGame: React.FC = () => {
-  const [score, setScore] = useState(0);
-  const [level, setLevel] = useState(1);
-  const [gameItems, setGameItems] = useState<GameItem[]>([
-    { id: 1, name: '🍎', type: 'organic', description: 'Apple core' },
-    { id: 2, name: '📰', type: 'recyclable', description: 'Newspaper' },
-    { id: 3, name: '🥤', type: 'plastic', description: 'Plastic cup', isConfusing: true },
-    { id: 4, name: '🍕', type: 'general', description: 'Pizza box with grease' },
-    { id: 5, name: '🥫', type: 'recyclable', description: 'Canned food' },
-    { id: 6, name: '📱', type: 'general', description: 'Broken smartphone', isConfusing: true },
-    { id: 7, name: '🌿', type: 'organic', description: 'Plant clippings' },
-    { id: 8, name: '☕', type: 'general', description: 'Coffee cup with plastic lining', isConfusing: true },
-  ]);
-  
-  const [feedback, setFeedback] = useState('');
-  const [showCelebration, setShowCelebration] = useState(false);
-  const dragItem = useRef<GameItem | null>(null);
-  const [completedItems, setCompletedItems] = useState<number[]>([]);
+interface Scenario {
+  id: string;
+  environmentId: string;
+  question: string;
+  options: {
+    text: string;
+    isEcoFriendly: boolean;
+    feedback: string;
+  }[];
+}
 
-  const dustbins: Dustbin[] = [
-    { type: 'organic', name: 'Compost', color: 'bg-green-600', label: 'COMPOST', description: 'Food waste, plants' },
-    { type: 'recyclable', name: 'Recycling', color: 'bg-blue-600', label: 'RECYCLE', description: 'Paper, glass, metal' },
-    { type: 'plastic', name: 'Plastic', color: 'bg-red-600', label: 'PLASTIC', description: 'Avoid when possible' },
-    { type: 'general', name: 'General Waste', color: 'bg-gray-600', label: 'GENERAL', description: 'Non-recyclables' }
-  ];
+const environments: Environment[] = [
+  {
+    id: 'city',
+    name: 'City',
+    icon: '🏙️',
+    color: 'from-gray-400 to-gray-600',
+    bgGradient: 'from-blue-100 to-gray-200',
+    position: { x: 20, y: 30 },
+    completed: false
+  },
+  {
+    id: 'village',
+    name: 'Village',
+    icon: '🏘️',
+    color: 'from-amber-400 to-orange-500',
+    bgGradient: 'from-amber-100 to-yellow-200',
+    position: { x: 70, y: 60 },
+    completed: false
+  },
+  {
+    id: 'forest',
+    name: 'Forest',
+    icon: '🌲',
+    color: 'from-green-400 to-green-600',
+    bgGradient: 'from-green-100 to-emerald-200',
+    position: { x: 25, y: 70 },
+    completed: false
+  },
+  {
+    id: 'river',
+    name: 'River',
+    icon: '🏞️',
+    color: 'from-blue-400 to-blue-600',
+    bgGradient: 'from-cyan-100 to-blue-200',
+    position: { x: 75, y: 25 },
+    completed: false
+  }
+];
 
-  const handleDragStart = (e: React.DragEvent, item: GameItem) => {
-    dragItem.current = item;
-    e.dataTransfer.setData('text/plain', item.id.toString());
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent, dustbinType: string) => {
-    e.preventDefault();
-    const itemId = parseInt(e.dataTransfer.getData('text/plain'));
-    const droppedItem = gameItems.find(item => item.id === itemId);
-    
-    if (!droppedItem) return;
-
-    if (droppedItem.type === dustbinType) {
-      // Correct drop
-      setScore(prev => prev + 10);
-      setFeedback('Great job! 🎉 +10 points');
-      setCompletedItems(prev => [...prev, droppedItem.id]);
-      
-      // Check if game is complete
-      if (completedItems.length + 1 >= gameItems.length) {
-        setShowCelebration(true);
+const scenarios: Scenario[] = [
+  {
+    id: 'city-1',
+    environmentId: 'city',
+    question: 'You need to get to work. How do you commute?',
+    options: [
+      {
+        text: 'Drive your car alone',
+        isEcoFriendly: false,
+        feedback: 'Cars produce lots of CO2 emissions. Try carpooling or public transport!'
+      },
+      {
+        text: 'Take the bus or bike',
+        isEcoFriendly: true,
+        feedback: 'Great choice! Public transport and biking reduce carbon emissions significantly!'
       }
-    } else {
-      // Wrong drop
-      setFeedback('Oops! Try again! 🤔 -5 points');
-      setScore(prev => Math.max(0, prev - 5));
+    ]
+  },
+  {
+    id: 'village-1',
+    environmentId: 'village',
+    question: 'The village needs a new energy source. What do you suggest?',
+    options: [
+      {
+        text: 'Build a coal power plant',
+        isEcoFriendly: false,
+        feedback: 'Coal is very polluting and contributes to climate change.'
+      },
+      {
+        text: 'Install solar panels',
+        isEcoFriendly: true,
+        feedback: 'Excellent! Solar energy is clean, renewable, and perfect for villages!'
+      }
+    ]
+  },
+  {
+    id: 'forest-1',
+    environmentId: 'forest',
+    question: 'You find litter while hiking. What do you do?',
+    options: [
+      {
+        text: 'Leave it for someone else',
+        isEcoFriendly: false,
+        feedback: 'Litter harms wildlife and pollutes nature. Always clean up!'
+      },
+      {
+        text: 'Pick it up and dispose properly',
+        isEcoFriendly: true,
+        feedback: 'Amazing! You\'re protecting wildlife and keeping nature beautiful!'
+      }
+    ]
+  },
+  {
+    id: 'river-1',
+    environmentId: 'river',
+    question: 'A factory wants to dump waste near the river. Your response?',
+    options: [
+      {
+        text: 'Allow it for economic growth',
+        isEcoFriendly: false,
+        feedback: 'Water pollution kills fish and makes water unsafe for everyone.'
+      },
+      {
+        text: 'Stop them and suggest proper waste treatment',
+        isEcoFriendly: true,
+        feedback: 'Perfect! Clean water is essential for all life on Earth!'
+      }
+    ]
+  }
+];
+
+type GameState = 'map' | 'scenario' | 'result' | 'final';
+
+const EcoExplorerGame: React.FC = () => {
+  const [gameState, setGameState] = useState<GameState>('map');
+  const [currentEnvironment, setCurrentEnvironment] = useState<Environment | null>(null);
+  const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null);
+  const [score, setScore] = useState(0);
+  const [completedEnvironments, setCompletedEnvironments] = useState<Set<string>>(new Set());
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [animateScore, setAnimateScore] = useState(false);
+
+  const handleEnvironmentClick = (env: Environment) => {
+    if (completedEnvironments.has(env.id)) return;
+    
+    setCurrentEnvironment(env);
+    const scenario = scenarios.find(s => s.environmentId === env.id);
+    setCurrentScenario(scenario || null);
+    setGameState('scenario');
+  };
+
+  const handleOptionClick = (option: { text: string; isEcoFriendly: boolean; feedback: string }) => {
+    setIsCorrect(option.isEcoFriendly);
+    setFeedbackText(option.feedback);
+    setShowFeedback(true);
+    
+    if (option.isEcoFriendly) {
+      setScore(prev => prev + 25);
+      setAnimateScore(true);
+      setTimeout(() => setAnimateScore(false), 600);
+    }
+  };
+
+  const handleContinue = () => {
+    if (currentEnvironment) {
+      setCompletedEnvironments(prev => new Set([...prev, currentEnvironment.id]));
     }
     
-    setTimeout(() => setFeedback(''), 2000);
-  };
-
-  const nextLevel = () => {
-    setLevel(prev => prev + 1);
-    setScore(0);
-    setCompletedItems([]);
-    setShowCelebration(false);
+    setShowFeedback(false);
+    setGameState('result');
     
-    // Add more confusing items for higher levels
-    const newItems: GameItem[] = [
-      { id: 1, name: '🍌', type: 'organic', description: 'Banana peel' },
-      { id: 2, name: '📦', type: 'recyclable', description: 'Cardboard box' },
-      { id: 3, name: '🧃', type: 'plastic', description: 'Juice box', isConfusing: true },
-      { id: 4, name: '🍫', type: 'general', description: 'Candy wrapper' },
-      { id: 5, name: '🥡', type: 'general', description: 'Takeout container', isConfusing: true },
-      { id: 6, name: '💡', type: 'general', description: 'Burnt out lightbulb', isConfusing: true },
-      { id: 7, name: '🧴', type: 'plastic', description: 'Shampoo bottle' },
-      { id: 8, name: '🍦', type: 'general', description: 'Ice cream container' },
-    ];
-    
-    setGameItems(newItems);
+    setTimeout(() => {
+      if (completedEnvironments.size === 3) {
+        setGameState('final');
+      } else {
+        setGameState('map');
+      }
+    }, 2000);
   };
 
   const resetGame = () => {
-    setLevel(1);
     setScore(0);
-    setCompletedItems([]);
-    setFeedback('');
-    setShowCelebration(false);
-    setGameItems([
-      { id: 1, name: '🍎', type: 'organic', description: 'Apple core' },
-      { id: 2, name: '📰', type: 'recyclable', description: 'Newspaper' },
-      { id: 3, name: '🥤', type: 'plastic', description: 'Plastic cup', isConfusing: true },
-      { id: 4, name: '🍕', type: 'general', description: 'Pizza box with grease' },
-      { id: 5, name: '🥫', type: 'recyclable', description: 'Canned food' },
-      { id: 6, name: '📱', type: 'general', description: 'Broken smartphone', isConfusing: true },
-      { id: 7, name: '🌿', type: 'organic', description: 'Plant clippings' },
-      { id: 8, name: '☕', type: 'general', description: 'Coffee cup with plastic lining', isConfusing: true },
-    ]);
+    setCompletedEnvironments(new Set());
+    setCurrentEnvironment(null);
+    setCurrentScenario(null);
+    setShowFeedback(false);
+    setGameState('map');
   };
 
-  // Pixelated background component
-  const PixelBackground = () => (
-    <div className="fixed inset-0 z-0 overflow-hidden">
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url('https://images.pexels.com/photos/25243378/pexels-photo-25243378.jpeg')", // ← ONLINE IMAGE
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          imageRendering: 'pixelated',
-          filter: 'contrast(1.2) brightness(0.9)'
-        }}
-      >
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-1000 opacity-30"></div>
-    </div>
-  );
+  const getScoreMessage = () => {
+    if (score === 100) return { message: "Eco Champion! 🌟", color: "text-green-600" };
+    if (score >= 75) return { message: "Environmental Hero! 🌱", color: "text-green-500" };
+    if (score >= 50) return { message: "Good Earth Friend! 🌍", color: "text-yellow-600" };
+    return { message: "Keep Learning! 📚", color: "text-orange-500" };
+  };
 
-  return (
-    <div className="min-h-screen relative overflow-hidden bg-green-950 text-white p-4 font-sans">
-      <PixelBackground />
-      
-      {/* Header */}
-      <div className="text-center mb-6 relative z-10">
-        <h1 className="text-4xl font-bold mb-2 text-green-300">
-          🌱 ECO SORTING CHALLENGE 🌱
-        </h1>
-        <h2 className="text-2xl text-green-200 mb-4">Level {level}: {level === 1 ? 'Introduction to Sustainability' : 'Advanced Recycling'}</h2>
-        <div className="bg-green-800 bg-opacity-70 rounded-full px-6 py-2 inline-block shadow-lg border border-green-600">
-          <span className="text-2xl font-bold text-green-100">Score: {score} 🏆</span>
-        </div>
-      </div>
-
-      {/* Feedback */}
-      {feedback && (
-        <div className="text-center mb-4 relative z-10">
-          <div className="bg-white bg-opacity-90 rounded-full px-6 py-2 inline-block shadow-lg animate-bounce">
-            <span className="text-xl font-bold text-green-800">{feedback}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Celebration */}
-      {showCelebration && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
-          <div className="bg-green-800 rounded-3xl p-8 text-center shadow-2xl animate-pulse border-2 border-green-500">
-            <h2 className="text-4xl font-bold text-green-300 mb-4">🎉 LEVEL COMPLETE! 🎉</h2>
-            <p className="text-2xl text-green-100 mb-4">You scored {score} points!</p>
-            <p className="text-xl text-green-200 mb-6">Ready for the next challenge?</p>
-            <button
-              onClick={nextLevel}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full
-                       shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200
-                       text-xl"
-            >
-              Next Level →
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Game Items to Drag */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-center mb-6 text-green-200">
-            Drag items to the correct bins 👇
-          </h3>
-          <div className="flex flex-wrap justify-center gap-6">
-            {gameItems.map((item) => (
-              <div
-                key={item.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, item)}
-                className={`
-                  text-6xl cursor-grab transition-all duration-200
-                  hover:scale-110 transform
-                  ${completedItems.includes(item.id) ? 'opacity-30' : 'animate-float'}
-                  ${item.isConfusing ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
-                `}
-                title={item.description}
-              >
-                {item.name}
-                {item.isConfusing && <span className="absolute -top-2 -right-2 text-xl">❓</span>}
-              </div>
-            ))}
+  const renderMap = () => (
+    <div className="min-h-screen bg-gradient-to-b from-sky-200 via-green-100 to-blue-200 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-green-800 mb-2 flex items-center justify-center gap-3">
+            <Leaf className="text-green-600" />
+            Eco Explorer
+            <Leaf className="text-green-600" />
+          </h1>
+          <p className="text-lg text-green-700">Explore environments and make eco-friendly choices!</p>
+          <div className={`text-2xl font-bold text-green-600 mt-4 transition-all duration-300 ${animateScore ? 'scale-125 text-yellow-500' : ''}`}>
+            Score: {score}/100
           </div>
         </div>
 
-        {/* Dustbins - Realistic Design */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-          {dustbins.map((bin) => (
+        <div className="relative bg-gradient-to-br from-green-200 to-blue-300 rounded-3xl p-8 shadow-2xl min-h-96">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-200/20 to-green-200/20 rounded-3xl"></div>
+          
+          {environments.map((env) => (
             <div
-              key={bin.type}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, bin.type)}
-              className="flex flex-col items-center"
+              key={env.id}
+              className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:scale-110 ${
+                completedEnvironments.has(env.id) ? 'opacity-60' : 'hover:z-10'
+              }`}
+              style={{
+                left: `${env.position.x}%`,
+                top: `${env.position.y}%`
+              }}
+              onClick={() => handleEnvironmentClick(env)}
             >
-              {/* Dustbin */}
-              <div className="w-32 h-40 mb-3 relative">
-                {/* Dustbin body */}
-                <div className={`absolute bottom-0 w-full h-32 ${bin.color} rounded-t-lg`}></div>
-                
-                {/* Dustbin top rim */}
-                <div className="absolute -top-1 -inset-x-1 h-3 bg-gray-500 rounded-t-lg"></div>
-                
-                {/* Dustbin label */}
-                <div className="absolute top-8 left-0 right-0 text-center">
-                  <span className="text-white font-bold text-sm bg-black bg-opacity-50 px-2 py-1 rounded">
-                    {bin.label}
-                  </span>
-                </div>
-                
-                {/* Shine effect */}
-                <div className="absolute top-0 right-0 w-8 h-full bg-white bg-opacity-20 skew-x-12"></div>
+              <div className={`bg-gradient-to-br ${env.color} p-4 rounded-full shadow-lg border-4 border-white hover:shadow-xl transition-all duration-300`}>
+                <div className="text-3xl">{env.icon}</div>
+                {completedEnvironments.has(env.id) && (
+                  <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                    <Star className="w-4 h-4 text-white fill-current" />
+                  </div>
+                )}
               </div>
-              
-              <div className="text-center">
-                <h4 className="text-lg font-bold text-white">{bin.name}</h4>
-                <p className="text-sm opacity-80">{bin.description}</p>
+              <div className="text-center mt-2 bg-white/80 rounded-full px-3 py-1 text-sm font-semibold">
+                {env.name}
               </div>
             </div>
           ))}
+
+          <div className="absolute bottom-4 right-4 text-sm text-green-700 bg-white/70 rounded-lg p-2">
+            Click environments to explore! ({completedEnvironments.size}/4 completed)
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderScenario = () => (
+    <div className={`min-h-screen bg-gradient-to-br ${currentEnvironment?.bgGradient} p-4`}>
+      <div className="max-w-2xl mx-auto pt-8">
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-4">{currentEnvironment?.icon}</div>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">{currentEnvironment?.name}</h2>
+          <div className="text-lg font-semibold text-gray-600">Score: {score}/100</div>
         </div>
 
-        {/* Warning */}
-        <div className="bg-red-900 bg-opacity-70 border-l-4 border-red-500 text-red-100 p-4 rounded-lg mb-8">
-          <p className="font-bold">⚠️ Plastic Warning:</p>
-          <p>Plastic waste is harmful to our environment. Try to avoid single-use plastics whenever possible!</p>
-        </div>
+        <div className="bg-white/90 backdrop-blur rounded-3xl p-8 shadow-2xl">
+          <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
+            {currentScenario?.question}
+          </h3>
 
-        {/* Confusing items explanation */}
-        <div className="bg-yellow-900 bg-opacity-70 border-l-4 border-yellow-500 text-yellow-100 p-4 rounded-lg mb-8">
-          <p className="font-bold">💡 Tip:</p>
-          <p>Some items are tricky! Hover over them to see descriptions. Coffee cups often have plastic lining, and pizza boxes with grease can't be recycled.</p>
-        </div>
-
-        {/* Controls */}
-        <div className="text-center">
-          <button
-            onClick={resetGame}
-            className="bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-8 rounded-full
-                     shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200
-                     text-xl mr-4"
-          >
-            🔄 Restart Game
-          </button>
-          
-          {completedItems.length >= gameItems.length && (
-            <button
-              onClick={nextLevel}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full
-                       shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200
-                       text-xl"
-            >
-              Next Level →
-            </button>
+          {!showFeedback ? (
+            <div className="space-y-4">
+              {currentScenario?.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleOptionClick(option)}
+                  className="w-full p-4 bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-left font-medium"
+                >
+                  {option.text}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className={`text-6xl mb-4 ${isCorrect ? 'animate-bounce' : ''}`}>
+                {isCorrect ? '🎉' : '😔'}
+              </div>
+              <div className={`text-xl font-bold mb-4 ${isCorrect ? 'text-green-600' : 'text-orange-600'}`}>
+                {isCorrect ? 'Great Choice!' : 'Try Again Next Time!'}
+              </div>
+              <p className="text-gray-700 mb-6 text-lg">{feedbackText}</p>
+              <button
+                onClick={handleContinue}
+                className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+                Continue Adventure
+              </button>
+            </div>
           )}
         </div>
       </div>
+    </div>
+  );
 
-      {/* Decorative elements */}
-      <div className="fixed top-10 left-10 text-4xl opacity-30 animate-bounce">🌿</div>
-      <div className="fixed top-20 right-20 text-3xl opacity-30 animate-pulse">♻️</div>
-      <div className="fixed bottom-10 left-20 text-4xl opacity-30 animate-bounce animation-delay-1000">🌎</div>
-      <div className="fixed bottom-20 right-10 text-3xl opacity-30 animate-pulse animation-delay-500">⭐</div>
+  const renderResult = () => (
+    <div className="min-h-screen bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center p-4">
+      <div className="bg-white/90 backdrop-blur rounded-3xl p-8 shadow-2xl text-center max-w-md">
+        <div className="text-6xl mb-4 animate-pulse">✨</div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Environment Explored!</h2>
+        <p className="text-gray-600">
+          {completedEnvironments.size === 4 
+            ? "You've explored all environments! Calculating final score..." 
+            : "Great job! Return to the map to explore more environments."}
+        </p>
+        <div className="animate-spin w-8 h-8 border-4 border-purple-300 border-t-purple-600 rounded-full mx-auto mt-4"></div>
+      </div>
+    </div>
+  );
+
+  const renderFinalScore = () => {
+    const scoreInfo = getScoreMessage();
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-200 to-blue-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur rounded-3xl p-8 shadow-2xl text-center max-w-lg">
+          <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Adventure Complete!</h2>
+          
+          <div className="bg-gradient-to-r from-yellow-100 to-green-100 rounded-2xl p-6 mb-6">
+            <div className="text-4xl font-bold text-gray-800 mb-2">{score}/100</div>
+            <div className={`text-xl font-bold ${scoreInfo.color}`}>{scoreInfo.message}</div>
+          </div>
+
+          <p className="text-gray-700 mb-6 text-lg">
+            You've explored all environments and learned about eco-friendly choices! 
+            Every small action can make a big difference for our planet.
+          </p>
+
+          <button
+            onClick={resetGame}
+            className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto"
+          >
+            <RotateCcw className="w-5 h-5" />
+            Play Again
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="font-sans">
+      {gameState === 'map' && renderMap()}
+      {gameState === 'scenario' && renderScenario()}
+      {gameState === 'result' && renderResult()}
+      {gameState === 'final' && renderFinalScore()}
     </div>
   );
 };
 
-export default EcoSortingGame;
+export default EcoExplorerGame;
