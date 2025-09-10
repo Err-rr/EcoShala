@@ -10,8 +10,31 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white py-12 px-6">
-      <div className="max-w-6xl mx-auto">
+    <footer className="relative bg-slate-900 text-white py-12 px-6 overflow-hidden">
+      {/* Hexagonal Background */}
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" className="absolute inset-0">
+          <defs>
+            <pattern
+              id="eco-hex"
+              width="100"
+              height="100"
+              patternUnits="userSpaceOnUse"
+            >
+              <polygon
+                points="50,0 100,25 100,75 50,100 0,75 0,25"
+                fill="none"
+                stroke="#E5E7EB"
+                strokeWidth="1.5"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#eco-hex)" />
+        </svg>
+      </div>
+
+      {/* Footer content */}
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <h3 className="text-2xl font-bold text-eco-green">EcoQuest</h3>

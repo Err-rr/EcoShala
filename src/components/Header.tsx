@@ -1,13 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Leaf, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Header = () => {
+  useEffect(() => {
+    // Inject styles and font
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
+      
+      .kode-mono-font {
+        font-family: "Kode Mono", monospace;
+        font-optical-sizing: auto;
+        font-weight: 600;
+        font-style: normal;
+        letter-spacing: -0.02em;
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      // Cleanup
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
   return (
     <header className="w-full px-6 py-6 flex items-center justify-between bg-background">
       {/* Left side: logo/title */}
       <div className="flex items-center">
-        <h1 className="text-3xl font-bold text-foreground">EcoShala</h1>
+        <h1 className="text-2xl md:text-4xl font-bold mb-6 text-gray-900 kode-mono-font">
+          EcoShala
+        </h1>
       </div>
 
       {/* Right side: eco-coin, user, buttons */}
@@ -24,14 +49,13 @@ export const Header = () => {
         {/* Buttons */}
         <div className="flex gap-3">
           <Link to="/login">
-              <Button variant="outline">Login</Button>
+            <Button variant="outline">Login</Button>
           </Link>
 
-
-            <Link to="/signup">
-              <Button className="bg-eco-green text-white hover:bg-eco-green/90">
-                Signup
-              </Button>
+          <Link to="/signup">
+            <Button className="bg-eco-green text-white hover:bg-eco-green/90">
+              Signup
+            </Button>
           </Link>
         </div>
       </div>
