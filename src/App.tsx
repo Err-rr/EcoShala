@@ -12,11 +12,9 @@ import ToDo from "./pages/ToDo";
 import Notes from "./pages/Notes";
 import Signup from "./pages/signup";
 import GameOne from "./pages/GameOne";
-import Activity from "./components/Activity";
-import Leaderboard from "./pages/leaderboard";
-import PLantHealth from "./pages/PlantHealth";
-import Trash from "./pages/Trash";
-
+import GameTwo from "./pages/GameTwo";
+import GameThree from "./pages/GameThree";
+import GameFour from "./pages/GameFour";
 
 const queryClient = new QueryClient();
 
@@ -36,10 +34,9 @@ const App = () => (
           <Route path="/notes" element={<Notes />} /> {/* ✅ fixed */}
           <Route path="*" element={<NotFound />} />
           <Route path="/game" element={<GameOne />} />
-          <Route path="/activity" element={<Activity />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/planthealth" element={<PLantHealth />} />
-          <Route path="/trash" element={<Trash />} />
+          <Route path="/gametwo" element={<GameTwo />} />
+          <Route path="/gamefour" element={<GameFour />} />
+          <Route path="/gamethree" element={<GameThree />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
@@ -47,4 +44,3 @@ const App = () => (
 );
 
 export default App;
-
