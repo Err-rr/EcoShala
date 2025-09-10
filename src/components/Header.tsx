@@ -7,7 +7,7 @@ export const Header = () => {
     <header className="w-full px-6 py-6 flex items-center justify-between bg-background">
       {/* Left side: logo/title */}
       <div className="flex items-center">
-        <h1 className="text-3xl font-bold text-foreground">EcoQuest</h1>
+        <h1 className="text-3xl font-bold text-foreground">EcoShala</h1>
       </div>
 
       {/* Right side: eco-coin, user, buttons */}
