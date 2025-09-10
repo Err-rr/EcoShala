@@ -15,6 +15,10 @@ import GameOne from "./pages/GameOne";
 import GameTwo from "./pages/GameTwo";
 import GameThree from "./pages/GameThree";
 import GameFour from "./pages/GameFour";
+import Activity from "./components/Activity";
+import Leaderboard from "./pages/leaderboard";
+import PLantHealth from "./pages/PlantHealth";
+import Trash from "./pages/Trash";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +41,10 @@ const App = () => (
           <Route path="/gametwo" element={<GameTwo />} />
           <Route path="/gamefour" element={<GameFour />} />
           <Route path="/gamethree" element={<GameThree />} />
+           <Route path="/activity" element={<Activity />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/planthealth" element={<PLantHealth />} />
+          <Route path="/trash" element={<Trash />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
