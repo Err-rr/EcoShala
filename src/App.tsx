@@ -15,6 +15,7 @@ import GameOne from "./pages/GameOne";
 import Activity from "./components/Activity";
 import Leaderboard from "./pages/leaderboard";
 import PLantHealth from "./pages/PlantHealth";
+import Trash from "./pages/Trash";
 
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/activity" element={<Activity />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/planthealth" element={<PLantHealth />} />
+          <Route path="/trash" element={<Trash />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

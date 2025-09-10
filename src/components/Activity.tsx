@@ -257,9 +257,10 @@ const Activity = () => {
                 <p className="text-yellow-800 mb-6 leading-relaxed">
                   Turn your waste into wonder! Upload trash photos and get creative upcycling ideas to build something amazing and useful.
                 </p>
-                <button className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
+                <a
+                 href="/trash" className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
                   Start Upcycling
-                </button>
+                </a>
                 <div className="mt-4 flex items-center gap-2 text-yellow-700">
                   <Award className="w-4 h-4" />
                   <span className="text-sm">Earn 20-40 points per project</span>
