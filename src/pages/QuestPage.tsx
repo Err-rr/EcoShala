@@ -31,13 +31,13 @@ const QuestPage: React.FC = () => {
 
   const levels: Level[] = [
     { id: 1, status: 'completed', icon: '🌱', title: 'Introduction to Sustainability', position: { left: 70, top: 470 } },
-    { id: 2, status: 'completed', icon: '♻', title: 'Carbon Footprint Basics', position: { left: 180, top: 320 } },
-    { id: 3, status: 'current', icon: null, title: 'Renewable Energy Challenge', position: { left: 370, top: 370 } },
-    { id: 4, status: 'available', icon: null, title: 'Waste Management Quest', position: { left: 570, top: 470 } },
-    { id: 5, status: 'available', icon: null, title: 'Biodiversity Explorer', position: { left: 670, top: 320 } },
-    { id: 6, status: 'locked', icon: null, title: 'Climate Action Simulator', position: { left: 780, top: 120 } },
-    { id: 7, status: 'locked', icon: null, title: 'Advanced Eco Solutions', position: { left: 970, top: 220 } },
-    { id: 8, status: 'locked', icon: null, title: 'Green Innovation Lab', position: { left: 920, top: 470 } },
+    { id: 2, status: 'available', icon: '♻', title: 'FoodWeb Basics', position: { left: 180, top: 320 } },
+    { id: 3, status: 'available', icon: null, title: 'Species Quest', position: { left: 370, top: 370 } },
+    { id: 4, status: 'available', icon: null, title: 'EcoSwipe', position: { left: 570, top: 380 } },
+    { id: 5, status: 'available', icon: null, title: 'Biodiversity Explorer', position: { left: 670, top: 230 } },
+    { id: 6, status: 'available', icon: null, title: 'Climate Action Simulator', position: { left: 800, top: 150 } },
+    { id: 7, status: 'available', icon: null, title: 'Advanced Eco Solutions', position: { left: 970, top: 220 } },
+    { id: 8, status: 'available', icon: null, title: 'Green Innovation Lab', position: { left: 920, top: 450 } },
   ];
 
   useEffect(() => {
@@ -70,8 +70,17 @@ const QuestPage: React.FC = () => {
           navigate('/game', { state: { ...level } });
         } else if (level.id === 2) {
           navigate('/gametwo', { state: { ...level } });
-        } else {
+        } else if (level.id === 3){
           navigate('/gamethree', { state: { ...level } });
+        }
+        else if (level.id === 4){
+          navigate('/gamefour', { state: { ...level } });
+        }
+        else if (level.id === 5){
+          navigate('/gamefive', { state: { ...level } });
+        }
+        else {
+          navigate('/gamesix', { state: { ...level } });
         }
       }, 1500);
     }
@@ -178,17 +187,19 @@ const QuestPage: React.FC = () => {
           font-family: 'Arial', sans-serif;
         }
 
-        .game-board {
-          width: 100%;
-          max-width: 1200px;
-          height: 700px;
-          margin: 0 auto;
-          background: linear-gradient(135deg, #2c3e50, #4a235a, #1b4f72);
-          position: relative;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+      .game-board {
+  width: 100%;
+  max-width: 1200px;
+  height: 700px;
+  margin: 0 auto;
+  background: url("https://cdna.artstation.com/p/assets/images/images/000/274/998/large/Sorcery_Concept03.jpg?1414573459")
+    no-repeat center center / cover;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
 
         .header {
           position: absolute;
@@ -196,7 +207,6 @@ const QuestPage: React.FC = () => {
           left: 50%;
           transform: translateX(-50%);
           z-index: 100;
-          text-align: center;
         }
 
         .level-selection-title {
@@ -204,47 +214,38 @@ const QuestPage: React.FC = () => {
           color: white;
           text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
           letter-spacing: 3px;
+          text-align: center;
           margin-bottom: 5px;
         }
 
         .subtitle {
           font-size: 1.2rem;
-          color: #a8e6cf;
-          font-weight: bold;
+          color: #31521dff;
+          text-align: center;
+         font-weight: bold;
         }
 
-        .tree, .bush, .flower {
-          position: absolute;
-          z-index: 3;
-        }
-
-        .tree-medium {
-          width: 40px;
-          height: 60px;
-          background: #2e603c;
-          border-radius: 50% 50% 20% 20%;
-        }
-
-        .tree-small {
-          width: 30px;
-          height: 45px;
-          background: #31521d;
-          border-radius: 50% 50% 20% 20%;
-        }
-
-        .bush {
-          width: 25px;
-          height: 25px;
-          background: #4a7c59;
-          border-radius: 50%;
-        }
+      
 
         .flower {
+          position: absolute;
           width: 8px;
           height: 8px;
           background: #ffeb3b;
           border-radius: 50%;
+          z-index: 3;
           animation: flowerBob 3s ease-in-out infinite;
+        }
+
+        .flower::after {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          width: 12px;
+          height: 12px;
+          background: radial-gradient(circle, rgba(255, 235, 59, 0.6) 0%, transparent 70%);
+          border-radius: 50%;
         }
 
         .path-container {
@@ -258,14 +259,15 @@ const QuestPage: React.FC = () => {
 
         .dirt-path {
           fill: none;
-          stroke: #8b4513;
+          stroke: #6ea42cff;
           stroke-width: 60;
           stroke-linecap: round;
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
 
         .path-border {
           fill: none;
-          stroke: #654321;
+          stroke: #2e603cff;
           stroke-width: 70;
           stroke-linecap: round;
           opacity: 0.7;
@@ -273,7 +275,7 @@ const QuestPage: React.FC = () => {
 
         .path-dots {
           fill: none;
-          stroke: #a0522d;
+          stroke: #654321;
           stroke-width: 4;
           stroke-dasharray: 8, 12;
           stroke-linecap: round;
@@ -294,14 +296,32 @@ const QuestPage: React.FC = () => {
           transform: scale(1.1);
         }
 
+        .level-stone:active {
+          transform: scale(0.95);
+        }
+
         .stone-base {
           width: 100%;
           height: 100%;
           background: linear-gradient(145deg, #f5f5dc 0%, #ddd8c0 100%);
           border-radius: 50%;
           position: relative;
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+          box-shadow: 
+            0 8px 16px rgba(0, 0, 0, 0.3),
+            inset 0 2px 4px rgba(255, 255, 255, 0.6),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.1);
           border: 4px solid #c4b896;
+        }
+
+        .stone-base::before {
+          content: '';
+          position: absolute;
+          top: 8px;
+          left: 8px;
+          right: 8px;
+          bottom: 8px;
+          background: radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+          border-radius: 50%;
         }
 
         .level-text {
@@ -312,6 +332,8 @@ const QuestPage: React.FC = () => {
           font-size: 10px;
           color: #5d4e37;
           font-weight: bold;
+          text-align: center;
+          line-height: 1;
         }
 
         .level-number {
@@ -322,6 +344,7 @@ const QuestPage: React.FC = () => {
           font-size: 24px;
           font-weight: bold;
           color: #3e2723;
+          text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .eco-icon {
@@ -330,6 +353,8 @@ const QuestPage: React.FC = () => {
           left: 50%;
           transform: translate(-50%, -50%);
           font-size: 28px;
+          line-height: 1;
+          filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
         }
 
         .level-stone.completed .stone-base {
@@ -351,6 +376,11 @@ const QuestPage: React.FC = () => {
           opacity: 0.7;
         }
 
+        .level-stone.locked .level-number,
+        .level-stone.locked .level-text {
+          color: #424242;
+        }
+
         .tooltip {
           position: absolute;
           top: -60px;
@@ -367,11 +397,22 @@ const QuestPage: React.FC = () => {
           transition: all 0.3s ease;
           pointer-events: none;
           z-index: 50;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .tooltip.visible {
           opacity: 1;
           transform: translateX(-50%) translateY(-10px);
+        }
+
+        .tooltip::after {
+          content: '';
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          border: 8px solid transparent;
+          border-top-color: rgba(46, 125, 50, 0.95);
         }
 
         .sparkle {
@@ -384,12 +425,22 @@ const QuestPage: React.FC = () => {
           z-index: 15;
         }
 
+        .sparkle:nth-child(4) { animation-delay: 1s; }
+        .sparkle:nth-child(5) { animation-delay: 2s; }
+
         .floating-leaf {
           position: absolute;
-          font-size: 20px;
+          fontSize: 20px;
           left: -50px;
           z-index: 1;
           animation: leafFloat 8s linear forwards;
+        }
+
+        @keyframes grassMove {
+          0%, 100% { transform: translateX(0) translateY(0); }
+          25% { transform: translateX(5px) translateY(-2px); }
+          50% { transform: translateX(-3px) translateY(2px); }
+          75% { transform: translateX(2px) translateY(-1px); }
         }
 
         @keyframes pathMove {
@@ -398,13 +449,19 @@ const QuestPage: React.FC = () => {
         }
 
         @keyframes completedGlow {
-          from { box-shadow: 0 0 0 rgba(255, 215, 0, 0.7); }
-          to { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+          from { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 0 0 rgba(255, 215, 0, 0.7); }
+          to { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.4); }
         }
 
         @keyframes currentPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
+          0%, 100% { 
+            transform: scale(1); 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 0 0 rgba(76, 175, 80, 0.7); 
+          }
+          50% { 
+            transform: scale(1.05); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(76, 175, 80, 0.6); 
+          }
         }
 
         @keyframes flowerBob {
@@ -431,6 +488,7 @@ const QuestPage: React.FC = () => {
         @media (max-width: 768px) {
           .game-board {
             height: 500px;
+            margin: 10px;
           }
           
           .level-selection-title {
@@ -441,10 +499,19 @@ const QuestPage: React.FC = () => {
             width: 60px;
             height: 60px;
           }
+          
+          .level-number {
+            font-size: 18px;
+          }
+          
+          .eco-icon {
+            font-size: 20px;
+          }
         }
       `}</style>
     </div>
   );
 };
+
 
 export default QuestPage;
