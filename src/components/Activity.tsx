@@ -17,7 +17,7 @@ const Activity = () => {
           const newImage = {
             id: Date.now() + Math.random(),
             src: e.target.result,
-            name: file.name,
+            fileName: file.name,
             points: Math.floor(Math.random() * 20) + 10, // Random points 10-30
             timestamp: new Date().toLocaleString()
           };
@@ -146,7 +146,7 @@ const Activity = () => {
 
         {/* Uploaded Images Grid */}
         {uploadedImages.length > 0 && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-green-200">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-green-200 mb-8">
             <h3 className="text-2xl font-bold text-green-800 mb-6 flex items-center gap-3">
               <Camera className="w-6 h-6" />
               Your Eco Contributions
@@ -158,7 +158,7 @@ const Activity = () => {
                     <div className="relative">
                       <img
                         src={image.src}
-                        alt={image.name}
+                        alt={image.fileName}
                         className="w-full h-48 object-cover"
                       />
                       <button
@@ -170,7 +170,7 @@ const Activity = () => {
                     </div>
                     <div className="p-4">
                       <h4 className="font-semibold text-green-800 truncate mb-2">
-                        {image.name}
+                        {image.fileName}
                       </h4>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-green-600">
@@ -188,7 +188,7 @@ const Activity = () => {
         )}
 
         {/* Tips Section */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 lg:p-8 mt-6 sm:mt-8 shadow-lg border border-green-200">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-green-200 mb-8">
           <h3 className="text-lg sm:text-xl font-bold text-green-800 mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
             <Leaf className="w-4 h-4 sm:w-5 sm:h-5" />
             Earn More Points!
@@ -202,6 +202,69 @@ const Activity = () => {
             </div>
             <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
               <strong>Nature Conservation:</strong> Planting trees, cleaning parks, or wildlife protection
+            </div>
+          </div>
+        </div>
+
+        {/* Activity Options */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold text-green-800 mb-6 text-center flex items-center justify-center gap-3">
+            <Leaf className="w-6 h-6" />
+            Eco Activities
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Plant Health Card */}
+            <div className="group relative overflow-hidden bg-gradient-to-br from-green-600 to-green-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
+                <Leaf className="w-20 h-20" />
+              </div>
+              <div className="relative p-8 text-white">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/30 transition-all duration-700 ease-out">
+                    <Leaf className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-2xl font-bold">Plant Health Check</h4>
+                </div>
+                <p className="text-green-50 mb-6 leading-relaxed">
+                  Upload photos of your plants and get AI-powered health analysis, care tips, and earn eco points for nurturing nature!
+                </p>
+                 <a
+                 href="/planthealth"
+                 className="bg-white text-green-700 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102 inline-block">
+                 Check Plant Health
+                 </a>
+                <div className="mt-4 flex items-center gap-2 text-green-100">
+                  <Award className="w-4 h-4" />
+                  <span className="text-sm">Earn 15-25 points per check</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Trash Upcycling Card */}
+            <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
+                <Upload className="w-20 h-20" />
+              </div>
+              <div className="relative p-8 text-yellow-900">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-white/30 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
+                    <Camera className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-2xl font-bold">Trash to Treasure</h4>
+                </div>
+                <p className="text-yellow-800 mb-6 leading-relaxed">
+                  Turn your waste into wonder! Upload trash photos and get creative upcycling ideas to build something amazing and useful.
+                </p>
+                <button className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
+                  Start Upcycling
+                </button>
+                <div className="mt-4 flex items-center gap-2 text-yellow-700">
+                  <Award className="w-4 h-4" />
+                  <span className="text-sm">Earn 20-40 points per project</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
