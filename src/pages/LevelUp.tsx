@@ -19,7 +19,7 @@ const EcoShala: React.FC = () => {
     { 
       id: 1, 
       title: "Introduction to Environmental Studies", 
-      icon: "🧬", 
+      icon: "🏅", 
       iconClass: "intro", 
       locked: false, 
       isActive: true,
