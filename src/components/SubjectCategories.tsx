@@ -7,7 +7,7 @@ export const SubjectCategories = () => {
   const sections = [
     { name: "Level-Up", icon: BookOpen, color: "bg-eco-green", path: "/levelup" },
     { name: "Activity", icon: SwatchBook, color: "bg-eco-brown", path: "/activity" }, // ✅ Hollow heart
-    { name: "Quiz", icon: HelpCircle, color: "bg-eco-blue" },
+    { name: "Quiz", icon: HelpCircle, color: "bg-eco-blue", path: "/quiz"},
     { name: "To-Do", icon: CheckSquare, color: "bg-eco-yellow", path: "/todo" },
     { name: "Notes", icon: FileText, color: "bg-eco-brown", path: "/notes" }
   ];
