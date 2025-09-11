@@ -37,7 +37,7 @@ export const Footer = () => {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
-            <h3 className="text-2xl font-bold text-eco-green">EcoQuest</h3>
+            <h3 className="text-2xl font-bold text-eco-green">EcoShala</h3>
             <p className="text-white/70 mt-2">
               Making the planet greener, one quest at a time
             </p>
