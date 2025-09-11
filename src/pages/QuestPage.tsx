@@ -30,9 +30,9 @@ const QuestPage: React.FC = () => {
   const [floatingLeaves, setFloatingLeaves] = useState<FloatingLeaf[]>([]);
 
   const levels: Level[] = [
-    { id: 1, status: 'completed', icon: '🌱', title: 'Introduction to Sustainability', position: { left: 70, top: 470 } },
-    { id: 2, status: 'available', icon: '♻', title: 'FoodWeb Basics', position: { left: 180, top: 320 } },
-    { id: 3, status: 'available', icon: null, title: 'Species Quest', position: { left: 370, top: 370 } },
+    { id: 1, status: 'completed', icon: '1', title: 'Introduction to Sustainability', position: { left: 70, top: 470 } },
+    { id: 2, status: 'available', icon: '2', title: 'FoodChain Basics', position: { left: 180, top: 320 } },
+    { id: 3, status: 'available', icon: null, title: 'Habitat Quest', position: { left: 370, top: 370 } },
     { id: 4, status: 'available', icon: null, title: 'EcoSwipe', position: { left: 570, top: 380 } },
     { id: 5, status: 'available', icon: null, title: 'Biodiversity Explorer', position: { left: 670, top: 230 } },
     { id: 6, status: 'available', icon: null, title: 'Climate Action Simulator', position: { left: 800, top: 150 } },
