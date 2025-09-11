@@ -3,7 +3,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { SubjectCategories } from "@/components/SubjectCategories";
 import { SocialProof } from "@/components/SocialProof";
 import { FeatureSection } from "@/components/FeatureSection";
-import { CoursePreview } from "@/components/CoursePreview";
+import CoursePreview  from "@/components/CoursePreview";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
