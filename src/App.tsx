@@ -20,6 +20,7 @@ import Leaderboard from "./pages/leaderboard";
 import PLantHealth from "./pages/PlantHealth";
 import Trash from "./pages/Trash";
 import About from "./pages/about";
+import PrivacyPolicy from "./pages/privacy";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/planthealth" element={<PLantHealth />} />
           <Route path="/trash" element={<Trash />} />
           <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
