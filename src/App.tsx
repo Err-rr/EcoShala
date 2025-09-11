@@ -21,6 +21,7 @@ import PLantHealth from "./pages/PlantHealth";
 import Trash from "./pages/Trash";
 import About from "./pages/about";
 import PrivacyPolicy from "./pages/privacy";
+import Community from "./pages/community";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,8 @@ const App = () => (
           <Route path="/trash" element={<Trash />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/community" element={<Community />} />
+
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
