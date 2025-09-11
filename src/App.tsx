@@ -22,6 +22,7 @@ import Trash from "./pages/Trash";
 import About from "./pages/about";
 import PrivacyPolicy from "./pages/privacy";
 import Community from "./pages/community";
+import Rewards from "./pages/rewards";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/rewards" element={<Rewards />} />
 
         </Routes>
       </BrowserRouter>
