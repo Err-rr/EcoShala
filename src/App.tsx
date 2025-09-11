@@ -25,6 +25,8 @@ import PrivacyPolicy from "./pages/privacy";
 import Community from "./pages/community";
 import Rewards from "./pages/rewards";
 
+import { Chatbot } from "./components/Chatbot";
+
 
 const queryClient = new QueryClient();
 
@@ -56,8 +58,9 @@ const App = () => (
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/community" element={<Community />} />
           <Route path="/rewards" element={<Rewards />} />
-         
+
         </Routes>
+        <Chatbot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
