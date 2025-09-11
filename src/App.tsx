@@ -20,6 +20,10 @@ import Leaderboard from "./pages/leaderboard";
 import PLantHealth from "./pages/PlantHealth";
 import Trash from "./pages/Trash";
 import Quiz from "./pages/Quiz";
+import About from "./pages/about";
+import PrivacyPolicy from "./pages/privacy";
+import Community from "./pages/community";
+import Rewards from "./pages/rewards";
 
 
 const queryClient = new QueryClient();
@@ -48,6 +52,10 @@ const App = () => (
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/planthealth" element={<PLantHealth />} />
           <Route path="/trash" element={<Trash />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/rewards" element={<Rewards />} />
          
         </Routes>
       </BrowserRouter>
