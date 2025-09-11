@@ -8,14 +8,15 @@ export const Header = () => {
     // Inject styles and font
     const styleSheet = document.createElement("style");
     styleSheet.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
-      
-      .kode-mono-font {
-        font-family: "Kode Mono", monospace;
-        font-optical-sizing: auto;
-        font-weight: 600;
+      @import url('https://fonts.googleapis.com/css2?family=Tagesschrift&display=swap');
+
+      .tagesschrift-regular {
+        font-family: "Tagesschrift", system-ui;
+        font-weight: 400;
         font-style: normal;
-        letter-spacing: -0.02em;
+      }
+      .eco-font {
+        font-family: Georgia, "Playfair Display", "Merriweather", serif;
       }
     `;
     document.head.appendChild(styleSheet);
@@ -30,8 +31,9 @@ export const Header = () => {
     <header className="w-full px-6 py-6 flex items-center justify-between bg-background">
       {/* Left side: logo/title */}
       <div className="flex items-center">
-        <h1 className="text-2xl md:text-4xl font-bold mb-6 text-gray-900 kode-mono-font">
-          EcoShala
+        <h1 className="text-2xl md:text-4xl font-bold mb-6 text-gray-900 tracking-tight">
+          <span className="eco-font">Eco</span>
+          <span className="tagesschrift-regular">Shala</span>
         </h1>
       </div>
 
