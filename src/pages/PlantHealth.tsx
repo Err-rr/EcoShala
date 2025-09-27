@@ -23,6 +23,30 @@ const LeafGuard = () => {
     'Rust': '🔴'
   };
 
+  const careTips = {
+    'Healthy': [
+      "Water early morning to reduce disease risk",
+      "Ensure good air circulation around plants",
+      "Remove dead or yellowing leaves regularly",
+      "Apply balanced fertilizer monthly",
+      "Monitor regularly for early problem detection"
+    ],
+    'Powdery': [
+      "Improve air circulation around the plant",
+      "Water at soil level, avoid wetting leaves",
+      "Remove affected leaves immediately",
+      "Apply fungicide spray in early morning",
+      "Reduce humidity around the plant"
+    ],
+    'Rust': [
+      "Remove and destroy infected leaves immediately",
+      "Water at soil level to keep leaves dry",
+      "Apply copper-based fungicide treatment",
+      "Increase spacing between plants for airflow",
+      "Avoid overhead watering completely"
+    ]
+  };
+
   // Load external scripts
   useEffect(() => {
     const loadScripts = async () => {
@@ -221,24 +245,31 @@ const LeafGuard = () => {
     }
   };
 
+  // Get the dominant prediction for care tips
+  const getDominantPrediction = () => {
+    if (predictions.length === 0) return null;
+    return predictions.reduce((prev, current) => 
+      prev.probability > current.probability ? prev : current
+    );
+  };
+
+  const dominantPrediction = getDominantPrediction();
+
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
+      background: 'linear-gradient(135deg, rgba(209, 250, 229, 0.8) 0%, rgba(167, 243, 208, 0.8) 100%)',
       padding: '15px',
-      color: '#ffffff',
+      color: '#1f2937',
       fontFamily: 'Arial, sans-serif'
     }}>
       <div style={{
-        background: 'rgba(0, 0, 0, 0.9)',
+        background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(15px)',
-        border: '2px solid #10b981', // Green border
+        border: '2px solid #10b981',
         borderRadius: '15px',
         padding: '20px',
-        boxShadow: '0 15px 30px rgba(16, 185, 129, 0.3)', // Green glow
+        boxShadow: '0 15px 30px rgba(16, 185, 129, 0.2)',
         maxWidth: '1000px',
         margin: '0 auto',
         minHeight: 'calc(85vh - 30px)'
@@ -246,16 +277,16 @@ const LeafGuard = () => {
         {/* Header */}
         <div style={{ position: 'relative', marginBottom: '30px', textAlign: 'center' }}>
           <h1 style={{
-            color: '#10b981', // Green text
+            color: '#10b981',
             fontSize: '1.8rem',
             fontWeight: '300',
-            textShadow: '0 0 15px rgba(16, 185, 129, 0.5)', // Green glow
+            textShadow: '0 0 15px rgba(16, 185, 129, 0.3)',
             margin: '0 0 10px 0'
           }}>
             🌿 LeafGuard
           </h1>
           <h2 style={{
-            color: '#10b981', // Green text
+            color: '#10b981',
             fontSize: '1.4rem',
             fontWeight: '300',
             margin: '0 0 20px 0'
@@ -269,8 +300,8 @@ const LeafGuard = () => {
                 position: 'absolute',
                 top: '0',
                 right: '0',
-                background: 'linear-gradient(45deg, #10b981, #059669)', // Green gradient
-                color: '#000000',
+                background: 'linear-gradient(45deg, #10b981, #059669)',
+                color: '#ffffff',
                 border: 'none',
                 padding: '8px',
                 borderRadius: '50%',
@@ -280,11 +311,11 @@ const LeafGuard = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)', // Green shadow
+                boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)',
                 transition: 'all 0.3s ease'
               }}
-              onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
-              onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
@@ -311,8 +342,8 @@ const LeafGuard = () => {
               <button
                 onClick={startWebcam}
                 style={{
-                  background: 'linear-gradient(45deg, #10b981, #059669)', // Green gradient
-                  color: '#000000',
+                  background: 'linear-gradient(45deg, #10b981, #059669)',
+                  color: '#ffffff',
                   border: 'none',
                   padding: '10px 16px',
                   fontSize: '0.9rem',
@@ -322,11 +353,11 @@ const LeafGuard = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 6px 15px rgba(16, 185, 129, 0.3)', // Green shadow
+                  boxShadow: '0 6px 15px rgba(16, 185, 129, 0.3)',
                   transition: 'all 0.3s ease'
                 }}
-                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z"/>
@@ -336,8 +367,8 @@ const LeafGuard = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 style={{
-                  background: 'linear-gradient(45deg, #10b981, #059669)', // Green gradient
-                  color: '#000000',
+                  background: 'linear-gradient(45deg, #10b981, #059669)',
+                  color: '#ffffff',
                   border: 'none',
                   padding: '10px 16px',
                   fontSize: '0.9rem',
@@ -347,7 +378,7 @@ const LeafGuard = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 6px 15px rgba(16, 185, 129, 0.3)', // Green shadow
+                  boxShadow: '0 6px 15px rgba(16, 185, 129, 0.3)',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
@@ -371,7 +402,7 @@ const LeafGuard = () => {
             {/* Mode Indicator */}
             {modeText && (
               <div style={{
-                color: '#10b981', // Green text
+                color: '#10b981',
                 fontSize: '0.9rem',
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
@@ -391,9 +422,9 @@ const LeafGuard = () => {
                   onDragOver={handleDragOver}
                   style={{
                     height: '100%',
-                    border: '2px dashed #10b981', // Green dashed border
+                    border: '2px dashed #10b981',
                     borderRadius: '10px',
-                    background: 'rgba(16, 185, 129, 0.1)', // Green background
+                    background: 'rgba(16, 185, 129, 0.1)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -402,27 +433,29 @@ const LeafGuard = () => {
                     transition: 'all 0.3s ease'
                   }}
                   onMouseOver={(e) => {
-                    e.target.style.background = 'rgba(16, 185, 129, 0.2)';
-                    e.target.style.borderColor = '#059669';
+                    const target = e.currentTarget;
+                    target.style.background = 'rgba(16, 185, 129, 0.2)';
+                    target.style.borderColor = '#059669';
                   }}
                   onMouseOut={(e) => {
-                    e.target.style.background = 'rgba(16, 185, 129, 0.1)';
-                    e.target.style.borderColor = '#10b981';
+                    const target = e.currentTarget;
+                    target.style.background = 'rgba(16, 185, 129, 0.1)';
+                    target.style.borderColor = '#10b981';
                   }}
                 >
                   <div style={{ fontSize: '3rem', marginBottom: '8px' }}>📤</div>
                   <div style={{ color: '#10b981', fontSize: '1rem', marginBottom: '3px' }}>
                     Click to upload image
                   </div>
-                  <div style={{ color: '#b0bec5', fontSize: '0.8rem' }}>
+                  <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>
                     or drag and drop here
                   </div>
                 </div>
               ) : uploadedImage ? (
                 <div style={{
                   height: '100%',
-                  background: 'rgba(16, 185, 129, 0.1)', // Green background
-                  border: '1px solid #10b981', // Green border
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid #10b981',
                   borderRadius: '10px',
                   display: 'flex',
                   justifyContent: 'center',
@@ -445,8 +478,8 @@ const LeafGuard = () => {
                   ref={webcamContainerRef}
                   style={{
                     height: '100%',
-                    background: 'rgba(16, 185, 129, 0.1)', // Green background
-                    border: '1px solid #10b981', // Green border
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid #10b981',
                     borderRadius: '10px',
                     display: 'flex',
                     justifyContent: 'center',
@@ -461,7 +494,7 @@ const LeafGuard = () => {
           {/* Right Section - Results */}
           <div style={{ flex: '1', display: 'flex', flexDirection: 'column', maxWidth: '50%' }}>
             <div style={{
-              color: '#10b981', // Green text
+              color: '#10b981',
               fontSize: '1.2rem',
               marginBottom: '15px',
               textAlign: 'center',
@@ -473,11 +506,11 @@ const LeafGuard = () => {
 
             <div style={{
               flex: '1',
-              background: 'rgba(0, 0, 0, 0.6)',
+              background: 'rgba(255, 255, 255, 0.9)',
               padding: '12px',
               borderRadius: '10px',
-              border: '1px solid #10b981', // Green border
-              boxShadow: '0 5px 15px rgba(16, 185, 129, 0.2)', // Green shadow
+              border: '1px solid #10b981',
+              boxShadow: '0 5px 15px rgba(16, 185, 129, 0.2)',
               display: 'flex',
               flexDirection: 'column',
               gap: '8px',
@@ -489,75 +522,138 @@ const LeafGuard = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   height: '100%',
-                  color: '#10b981', // Green text
+                  color: '#10b981',
                   fontSize: '1rem',
                   fontStyle: 'italic'
                 }}>
                   Loading model...
                 </div>
               ) : predictions.length > 0 ? (
-                predictions.map((prediction, index) => {
-                  const percentage = Math.round(prediction.probability * 100);
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        background: 'linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2))', // Green gradient
-                        borderRadius: '8px',
-                        borderLeft: '4px solid #10b981', // Green border
-                        color: '#ffffff',
+                <>
+                  {predictions.map((prediction, index) => {
+                    const percentage = Math.round(prediction.probability * 100);
+                    return (
+                      <div
+                        key={index}
+                        style={{
+                          background: 'rgba(249, 250, 251, 0.8)',
+                          borderRadius: '8px',
+                          borderLeft: `4px solid ${getResultColor(prediction.className)}`,
+                          color: '#1f2937',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: '12px',
+                          gap: '10px',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseOver={(e) => {
+                          const target = e.currentTarget;
+                          target.style.transform = 'translateY(-2px)';
+                          target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                          const className = prediction.className;
+                          if (className === 'Healthy') {
+                            target.style.background = 'rgba(220, 252, 231, 0.9)';
+                          } else if (className === 'Powdery') {
+                            target.style.background = 'rgba(254, 249, 195, 0.9)';
+                          } else if (className === 'Rust') {
+                            target.style.background = 'rgba(254, 226, 226, 0.9)';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          const target = e.currentTarget;
+                          target.style.transform = 'translateY(0)';
+                          target.style.boxShadow = 'none';
+                          target.style.background = 'rgba(249, 250, 251, 0.8)';
+                        }}
+                      >
+                        <div style={{
+                          fontSize: '1.5rem',
+                          width: '30px',
+                          textAlign: 'center'
+                        }}>
+                          {classIcons[prediction.className] || '🔬'}
+                        </div>
+                        <div style={{
+                          flex: '1',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <span style={{ fontWeight: '600', fontSize: '1rem' }}>
+                            {prediction.className}:
+                          </span>
+                          <span style={{
+                            fontSize: '1.2rem',
+                            fontWeight: '700',
+                            color: getResultColor(prediction.className)
+                          }}>
+                            {percentage}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Care Tips Section */}
+                  {dominantPrediction && dominantPrediction.probability > 0.3 && (
+                    <div style={{
+                      marginTop: '20px',
+                      background: 'rgba(240, 253, 244, 0.9)',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      border: '2px solid rgba(16, 185, 129, 0.3)',
+                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.1)'
+                    }}>
+                      <div style={{
+                        color: '#10b981',
+                        fontSize: '1.3rem',
+                        fontWeight: '800',
+                        marginBottom: '16px',
                         display: 'flex',
                         alignItems: 'center',
-                        padding: '12px',
                         gap: '10px',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseOver={(e) => {
-                        e.target.style.transform = 'translateX(5px)';
-                        e.target.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.3)';
-                        e.target.style.background = 'linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.3))';
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.transform = 'translateX(0)';
-                        e.target.style.boxShadow = 'none';
-                        e.target.style.background = 'linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2))';
-                      }}
-                    >
-                      <div style={{
-                        fontSize: '1.5rem',
-                        width: '30px',
-                        textAlign: 'center'
+                        textShadow: '0 1px 2px rgba(16, 185, 129, 0.2)'
                       }}>
-                        {classIcons[prediction.className] || '🔬'}
+                        <span style={{ fontSize: '1.6rem' }}>💡</span>
+                        Care Tips for {dominantPrediction.className} Plant
                       </div>
                       <div style={{
-                        flex: '1',
                         display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
+                        flexDirection: 'column',
+                        gap: '8px'
                       }}>
-                        <span style={{ fontWeight: '600', fontSize: '1rem' }}>
-                          {prediction.className}:
-                        </span>
-                        <span style={{
-                          fontSize: '1.2rem',
-                          fontWeight: '700',
-                          color: getResultColor(prediction.className),
-                          textShadow: '0 0 10px rgba(16, 185, 129, 0.5)' // Green glow
-                        }}>
-                          {percentage}%
-                        </span>
+                        {careTips[dominantPrediction.className]?.map((tip, index) => (
+                          <div key={index} style={{
+                            color: '#1f2937',
+                            fontSize: '0.95rem',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px',
+                            padding: '6px 0',
+                            fontWeight: '500'
+                          }}>
+                            <span style={{ 
+                              color: '#10b981', 
+                              fontWeight: 'bold', 
+                              minWidth: '20px',
+                              fontSize: '1rem'
+                            }}>
+                              {index + 1}.
+                            </span>
+                            <span style={{ lineHeight: '1.4' }}>{tip}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  );
-                })
+                  )}
+                </>
               ) : (
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   height: '100%',
-                  color: '#10b981', // Green text
+                  color: '#10b981',
                   fontSize: '1rem',
                   fontStyle: 'italic',
                   textAlign: 'center',

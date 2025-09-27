@@ -35,15 +35,6 @@ export const HeroSection = () => {
       ref={r}
       className="relative min-h-[85vh] flex items-center justify-center px-6 py-12 overflow-hidden"
     >
-      {/* Floating eco particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Leaves */}
-        <div className="absolute top-[15%] left-[20%] w-6 h-10 bg-green-600 rounded-full rotate-12 animate-float opacity-80"></div>
-        <div className="absolute top-[40%] right-[15%] w-5 h-8 bg-green-700 rounded-full -rotate-6 animate-float opacity-70"></div>
-        {/* Flowers */}
-        <div className="absolute bottom-[30%] left-[35%] w-6 h-6 bg-pink-400 rounded-full animate-float opacity-80"></div>
-        <div className="absolute top-[25%] right-[40%] w-4 h-4 bg-yellow-400 rounded-full animate-float opacity-90"></div>
-      </div>
 
       {/* Main Content */}
       <div className="relative z-10 text-center max-w-6xl mx-auto">
