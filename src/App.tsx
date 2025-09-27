@@ -24,6 +24,7 @@ import About from "./pages/about";
 import PrivacyPolicy from "./pages/privacy";
 import Community from "./pages/community";
 import Rewards from "./pages/rewards";
+import Geo from "./pages/Geo";
 
 import { Chatbot } from "./components/Chatbot";
 
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/community" element={<Community />} />
           <Route path="/rewards" element={<Rewards />} />
+          <Route path="/geo" element={<Geo />} />
 
         </Routes>
         <Chatbot />

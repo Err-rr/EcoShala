@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Camera, Award, Leaf, CheckCircle, X } from 'lucide-react';
+import { Upload, Camera, Award, Leaf, CheckCircle, Globe, X } from 'lucide-react';
 
 const Activity = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -267,6 +267,34 @@ const Activity = () => {
                 </div>
               </div>
             </div>
+
+            {/* Eco Explorer Card */}
+            <div className="group relative overflow-hidden bg-gradient-to-br from-blue-300 to-blue-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
+                <Globe className="w-20 h-20" />
+              </div>
+              <div className="relative p-8 text-yellow-900">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-white/30 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
+                    <Globe className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-2xl font-bold">Eco Explorer</h4>
+                </div>
+                <p className="text-yellow-800 mb-6 leading-relaxed">
+                  Travel virtually 🌍! Get dropped at random world-famous places and observe cleanliness, greenery, and pollution levels like a real eco-detective.
+                </p>
+                <a
+                 href="/geo" className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
+                  Start Exploring
+                </a>
+                <div className="mt-4 flex items-center gap-2 text-yellow-700">
+                  <Award className="w-4 h-4" />
+                  <span className="text-sm">Earn 20-40 points per project</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
