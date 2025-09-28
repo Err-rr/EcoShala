@@ -62,7 +62,7 @@ const Activity = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-200 p-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -212,91 +212,100 @@ const Activity = () => {
             <Leaf className="w-6 h-6" />
             Eco Activities
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* Flex row for cards */}
+          <div className="flex flex-col xl:flex-row gap-6 justify-center items-stretch max-w-7xl mx-auto">
             {/* Plant Health Card */}
-            <div className="group relative overflow-hidden bg-gradient-to-br from-green-600 to-green-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+            <div className="group relative overflow-hidden bg-gradient-to-br from-green-600 to-green-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105 flex-1 min-w-0">
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
-                <Leaf className="w-20 h-20" />
+              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-all duration-700 ease-out">
+                <Leaf className="w-16 h-16" />
               </div>
-              <div className="relative p-8 text-white">
+              <div className="relative p-6 text-white h-full flex flex-col">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/30 transition-all duration-700 ease-out">
-                    <Leaf className="w-8 h-8" />
+                  <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-full group-hover:bg-white/30 transition-all duration-700 ease-out">
+                    <Leaf className="w-6 h-6" />
                   </div>
-                  <h4 className="text-2xl font-bold">Plant Health Check</h4>
+                  <h4 className="text-xl font-bold">Plant Health Check</h4>
                 </div>
-                <p className="text-green-50 mb-6 leading-relaxed">
-                  Upload photos of your plants and get AI-powered health analysis, care tips, and earn eco points for nurturing nature!
+                <p className="text-green-50 mb-6 leading-relaxed text-sm flex-grow">
+                  Upload photos of the leaves of any plant and get AI-powered health analysis, care tips, and earn eco points for nurturing nature.
                 </p>
-                 <a
-                 href="/planthealth"
-                 className="bg-white text-green-700 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102 inline-block">
-                 Check Plant Health
-                 </a>
-                <div className="mt-4 flex items-center gap-2 text-green-100">
-                  <Award className="w-4 h-4" />
-                  <span className="text-sm">Earn 15-25 points per check</span>
+                <div className="mt-auto">
+                  <a
+                    href="/planthealth"
+                    className="bg-white text-green-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-green-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102 inline-block text-sm">
+                    Check Plant Health
+                  </a>
+                  <div className="mt-3 flex items-center gap-2 text-green-100">
+                    <Award className="w-4 h-4" />
+                    <span className="text-xs">Earn 50 Ponits per Health-Check</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Trash Upcycling Card */}
-            <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+            <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105 flex-1 min-w-0">
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
-                <Upload className="w-20 h-20" />
+              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-all duration-700 ease-out">
+                <Upload className="w-16 h-16" />
               </div>
-              <div className="relative p-8 text-yellow-900">
+              <div className="relative p-6 text-yellow-900 h-full flex flex-col">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-white/30 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
-                    <Camera className="w-8 h-8" />
+                  <div className="bg-white/30 backdrop-blur-sm p-2.5 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
+                    <Camera className="w-6 h-6" />
                   </div>
-                  <h4 className="text-2xl font-bold">Trash to Treasure</h4>
+                  <h4 className="text-xl font-bold">Trash to Treasure</h4>
                 </div>
-                <p className="text-yellow-800 mb-6 leading-relaxed">
-                  Turn your waste into wonder! Upload trash photos and get creative upcycling ideas to build something amazing and useful.
+                <p className="text-yellow-800 mb-6 leading-relaxed text-sm flex-grow">
+                 Turn your waste into wonder ! Upload the trashs available and get creative upcycling ideas step by step to build something amazing and useful for daily life.
                 </p>
-                <a
-                 href="/trash" className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
-                  Start Upcycling
-                </a>
-                <div className="mt-4 flex items-center gap-2 text-yellow-700">
-                  <Award className="w-4 h-4" />
-                  <span className="text-sm">Earn 20-40 points per project</span>
+                <div className="mt-auto">
+                  <a
+                    href="/trash"
+                    className="bg-white text-yellow-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102 text-sm">
+                    Start Upcycling
+                  </a>
+                  <div className="mt-3 flex items-center gap-2 text-yellow-700">
+                    <Award className="w-4 h-4" />
+                    <span className="text-xs">Earn 50 Ponits per upcycling</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Eco Explorer Card */}
-            <div className="group relative overflow-hidden bg-gradient-to-br from-blue-300 to-blue-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105">
+            <div className="group relative overflow-hidden bg-gradient-to-br from-blue-300 to-blue-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-105 flex-1 min-w-0">
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-              <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-all duration-700 ease-out">
-                <Globe className="w-20 h-20" />
+              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-all duration-700 ease-out">
+                <Globe className="w-16 h-16" />
               </div>
-              <div className="relative p-8 text-yellow-900">
+              <div className="relative p-6 text-yellow-900">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-white/30 backdrop-blur-sm p-3 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
-                    <Globe className="w-8 h-8" />
+                  <div className="bg-white/30 backdrop-blur-sm p-2.5 rounded-full group-hover:bg-white/40 transition-all duration-700 ease-out">
+                    <Globe className="w-6 h-6" />
                   </div>
-                  <h4 className="text-2xl font-bold">Eco Explorer</h4>
+                  <h4 className="text-xl font-bold">Eco Explorer</h4>
                 </div>
-                <p className="text-yellow-800 mb-6 leading-relaxed">
-                  Travel virtually 🌍! Get dropped at random world-famous places and observe cleanliness, greenery, and pollution levels like a real eco-detective.
+                <p className="text-yellow-800 mb-6 leading-relaxed text-sm">
+                  Travel virtually ! Get dropped at random world-famous places and observe cleanliness, greenery, and pollution levels like a real Eco Detective.
                 </p>
                 <a
-                 href="/geo" className="bg-white text-yellow-700 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102">
+                  href="/geo"
+                  className="bg-white text-yellow-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-yellow-50 transition-all duration-500 ease-out shadow-lg hover:shadow-xl transform hover:scale-102 text-sm">
                   Start Exploring
                 </a>
-                <div className="mt-4 flex items-center gap-2 text-yellow-700">
+                <div className="mt-3 flex items-center gap-2 text-yellow-700">
                   <Award className="w-4 h-4" />
-                  <span className="text-sm">Earn 20-40 points per project</span>
+                  <span className="text-xs">Earn 50 Ponits per Travel</span>
                 </div>
               </div>
             </div>
 
           </div>
         </div>
+
       </div>
     </div>
   );

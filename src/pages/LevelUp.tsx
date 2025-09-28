@@ -1004,7 +1004,7 @@ const EcoShala: React.FC = () => {
                 
                 <button style={styles.quizButton} onClick={handleAttemptQuiz}>
                   <BookOpen size={20} />
-                  Complete Quest
+                  Completed
                 </button>
               </div>
             </div>
