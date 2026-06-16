@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { GoogleMap, LoadScript, StreetViewPanorama } from "@react-google-maps/api";
+import { useAuth } from "@/context/AuthContext";
+import { awardPoints } from "@/lib/pointsService";
 
 // Famous Indian landmarks
 const famousPlaces = [
@@ -25,6 +27,7 @@ function randomLatLng(centerLat: number, centerLng: number, radiusInMeters: numb
 }
 
 export default function Geo() {
+  const { user } = useAuth();
   const [location, setLocation] = useState(famousPlaces[0]);
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -48,6 +51,12 @@ export default function Geo() {
       lat: randomPoint.lat,
       lng: randomPoint.lng,
     });
+
+    if (user) {
+      awardPoints(user.uid, 50, "eco-explorer").catch((error) => {
+        console.error("Failed to award eco explorer points:", error);
+      });
+    }
 
     setTimeout(() => setLoading(false), 1000);
   };

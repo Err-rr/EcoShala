@@ -1,44 +1,69 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useAuth } from "@/context/AuthContext";
+import { awardPoints } from "@/lib/pointsService";
+import { storage } from "@/lib/firebase";
 
 const Trash: React.FC = () => {
+  const { user } = useAuth();
   const [input, setInput] = useState("");
   const [ideas, setIdeas] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const genAI = new GoogleGenerativeAI("AIzaSyDrrDY3kuPB9YspZza8NrqC2DSafGzka7Y"); // put your key here
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const fallbackIdeas = [
-    "♻️ Turn it into a simple container or storage box.",
-    "🌱 Use as a planter for small herbs or flowers.",
-    "🎨 Repurpose into a craft project or art piece.",
-    "🛠️ Cut and reshape into useful household tools.",
+    "â™»ï¸ Turn it into a simple container or storage box.",
+    "ðŸŒ± Use as a planter for small herbs or flowers.",
+    "ðŸŽ¨ Repurpose into a craft project or art piece.",
+    "ðŸ› ï¸ Cut and reshape into useful household tools.",
   ];
 
+  const handleImageUpload = (file: File | null) => {
+    if (!file) return;
+    setSelectedImage(file);
+    setSelectedImagePreview(URL.createObjectURL(file));
+  };
+
   const handleGenerate = async () => {
-    if (!input.trim()) return;
+    if (!user) {
+      alert("Please log in to generate upcycling ideas.");
+      return;
+    }
+
+    if (!input.trim() || !selectedImage) return;
+
     setLoading(true);
     setIdeas([]);
 
     try {
+      const imageRef = ref(storage, `trash/${user.uid}/${Date.now()}-${selectedImage.name}`);
+      await uploadBytes(imageRef, selectedImage);
+      const imageUrl = await getDownloadURL(imageRef);
+
       const result = await model.generateContent(
         `You are an eco-friendly AI. 
         The user has this trash item: "${input}".  
+        The uploaded image URL is: ${imageUrl}
         Give at least 6-8 creative and **detailed ideas** for how this item can be reused, recycled, or upcycled.  
         Write them as a clean numbered list, without markdown (*, **, -).  
-        Each idea should be 2–3 sentences long, explaining how to do it and why it's useful.`
+        Each idea should be 2â€“3 sentences long, explaining how to do it and why it's useful.`
       );
 
       const text = result.response.text();
 
-      // Split into ideas
       const formattedIdeas = text
-        .split(/\d+\.\s/) // split by "1.", "2.", etc.
+        .split(/\d+\.\s/)
         .map((line) => line.trim())
         .filter((line) => line.length > 0);
 
       setIdeas(formattedIdeas.length > 0 ? formattedIdeas : fallbackIdeas);
+      await awardPoints(user.uid, 50, "upcycling");
     } catch (error) {
       console.error(error);
       setIdeas(fallbackIdeas);
@@ -71,7 +96,7 @@ const Trash: React.FC = () => {
         }}
       >
         <h1 style={{ textAlign: "center", fontSize: "2rem", marginBottom: "1.5rem" }}>
-          ♻️ Trash to Treasure
+          â™»ï¸ Trash to Treasure
         </h1>
 
         <textarea
@@ -92,8 +117,49 @@ const Trash: React.FC = () => {
         />
 
         <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "linear-gradient(to right, #fbbf24, #f59e0b)",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "1.05rem",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            marginBottom: "1rem",
+          }}
+        >
+          Upload Trash Image
+        </button>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleImageUpload(e.target.files?.[0] ?? null)}
+          style={{ display: "none" }}
+        />
+
+        {selectedImagePreview ? (
+          <img
+            src={selectedImagePreview}
+            alt="Selected trash"
+            style={{
+              width: "100%",
+              maxHeight: "220px",
+              objectFit: "cover",
+              borderRadius: "12px",
+              marginBottom: "1rem",
+            }}
+          />
+        ) : null}
+
+        <button
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || !selectedImage}
           style={{
             width: "100%",
             padding: "12px",
@@ -105,14 +171,15 @@ const Trash: React.FC = () => {
             borderRadius: "12px",
             cursor: "pointer",
             transition: "all 0.3s ease",
+            opacity: loading || !selectedImage ? 0.7 : 1,
           }}
         >
-          {loading ? "✨ Generating..." : "Generate Ideas"}
+          {loading ? "âœ¨ Generating..." : "Generate Ideas"}
         </button>
 
         {ideas.length > 0 && (
           <div style={{ marginTop: "2rem" }}>
-            <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>💡 Ideas</h2>
+            <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>ðŸ’¡ Ideas</h2>
             <div style={{ display: "grid", gap: "1rem" }}>
               {ideas.map((idea, idx) => (
                 <div
@@ -139,3 +206,4 @@ const Trash: React.FC = () => {
 };
 
 export default Trash;
+

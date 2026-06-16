@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
+import { awardPoints } from "@/lib/pointsService";
 
 interface Question {
   question: string;
@@ -8,6 +12,7 @@ interface Question {
 }
 
 const Quiz: React.FC = () => {
+  const { user } = useAuth();
   const questions: Question[] = [
     {
       question: "Which gas makes up approximately 78% of Earth's atmosphere?",
@@ -83,6 +88,8 @@ const Quiz: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [totalTime, setTotalTime] = useState(0);
+  const awardedQuestionsRef = useRef<Set<number>>(new Set());
+  const completionAwardedRef = useRef(false);
 
   // Timer effect
   useEffect(() => {
@@ -121,7 +128,19 @@ const Quiz: React.FC = () => {
     setSelectedAnswer(index);
   };
 
-  const nextQuestion = () => {
+  const saveQuizResult = async (earnedPoints: number) => {
+    if (!user) return;
+
+    await addDoc(collection(db, "quizResults"), {
+      uid: user.uid,
+      score,
+      totalQuestions: questions.length,
+      earnedPoints,
+      timestamp: serverTimestamp(),
+    });
+  };
+
+  const nextQuestion = async () => {
     if (selectedAnswer === null && !answered) return;
 
     if (!answered) {
@@ -134,6 +153,12 @@ const Quiz: React.FC = () => {
         setStreak(streak + 1);
         const timeBonus = timeLeft > 15 ? " Quick answer!" : "";
         setFeedbackMessage(`Correct!${timeBonus}`);
+        if (user && !awardedQuestionsRef.current.has(currentQuestion)) {
+          awardedQuestionsRef.current.add(currentQuestion);
+          awardPoints(user.uid, 10, "quiz").catch((error) => {
+            console.error("Failed to award quiz points:", error);
+          });
+        }
       } else {
         setStreak(0);
         setFeedbackMessage("Incorrect. The correct answer is highlighted.");
@@ -143,6 +168,12 @@ const Quiz: React.FC = () => {
       setTimeout(() => setShowFeedback(false), 1500);
     } else {
       if (currentQuestion === questions.length - 1) {
+        if (user && !completionAwardedRef.current) {
+          completionAwardedRef.current = true;
+          const earnedPoints = (score * 10) + 20;
+          await awardPoints(user.uid, 20, "quiz");
+          await saveQuizResult(earnedPoints);
+        }
         setShowResults(true);
       } else {
         setCurrentQuestion(currentQuestion + 1);
@@ -176,6 +207,8 @@ const Quiz: React.FC = () => {
     setStreak(0);
     setShowFeedback(false);
     setTotalTime(0);
+    awardedQuestionsRef.current = new Set();
+    completionAwardedRef.current = false;
   };
 
   const getScoreMessage = () => {
