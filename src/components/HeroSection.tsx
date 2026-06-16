@@ -3,9 +3,13 @@ import * as THREE from "three";
 import BIRDS from "vanta/dist/vanta.birds.min";
 import { Link } from "react-router-dom";
 
+interface VantaInstance {
+  destroy: () => void;
+}
+
 export const HeroSection = () => {
   const r = useRef<HTMLDivElement | null>(null);
-  const [v, setV] = useState<any>(null);
+  const [v, setV] = useState<VantaInstance | null>(null);
 
   useEffect(() => {
     if (!v && r.current) {
@@ -22,7 +26,7 @@ export const HeroSection = () => {
         backgroundColor: 0xffffff, // white background
         color1: 0x28c562, // light green
         color2: 0xffeb3b, // yellow
-      });
+      }) as VantaInstance;
       setV(ve);
     }
     return () => {

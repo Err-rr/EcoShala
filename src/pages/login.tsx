@@ -1,15 +1,94 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { auth } from "@/lib/firebase";
+import { loginUser } from "@/lib/auth";
+import { getCurrentUserProfile } from "@/lib/userService";
+import { toast } from "sonner";
 
 export default function EcoShalaLogin() {
+  const navigate = useNavigate();
   const [loginMethod, setLoginMethod] = useState<'email' | 'google'>('email');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleEmailLogin = () => console.log('Email login:', { email, password });
-  const handleGoogleLogin = () => console.log('Google login attempted');
+  const mapError = (errorValue: unknown): string => {
+    if (errorValue instanceof FirebaseError) {
+      switch (errorValue.code) {
+        case "auth/invalid-email":
+          return "Please enter a valid email address.";
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          return "Incorrect password. Please try again.";
+        case "auth/user-not-found":
+          return "No account exists for that email address.";
+        case "auth/too-many-requests":
+          return "Too many failed attempts. Please try again later.";
+        case "auth/popup-closed-by-user":
+          return "Google sign-in was closed before it finished.";
+        default:
+          return "We couldn't sign you in right now.";
+      }
+    }
+
+    if (errorValue instanceof Error) {
+      return errorValue.message;
+    }
+
+    return "We couldn't sign you in right now.";
+  };
+
+  const redirectByProfile = async (uid: string) => {
+    const profile = await getCurrentUserProfile(uid);
+
+    if (!profile) {
+      await signOut(auth);
+      throw new Error("Your EcoShala profile is missing. Please sign up again.");
+    }
+
+    navigate(profile.role === "student" ? "/dashboard" : "/teacher-dashboard", { replace: true });
+  };
+
+  const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const credential = await loginUser(email.trim(), password);
+      toast.success("Login successful");
+      await redirectByProfile(credential.user.uid);
+    } catch (loginError) {
+      const message = mapError(loginError);
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(auth, provider);
+      toast.success("Google login successful");
+      await redirectByProfile(credential.user.uid);
+    } catch (googleError) {
+      const message = mapError(googleError);
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -48,6 +127,10 @@ export default function EcoShalaLogin() {
               </p>
             </div>
 
+            {error ? (
+              <p className="mb-4 text-center text-sm font-medium text-red-600">{error}</p>
+            ) : null}
+
             {/* Glassmorphic Login Container */}
             <div className="bg-white/40 backdrop-blur-lg rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/30 transform transition-all duration-300 hover:shadow-3xl">
               {/* Login Method Toggle */}
@@ -79,7 +162,7 @@ export default function EcoShalaLogin() {
               {/* Login Forms */}
               <div className="min-h-[320px] sm:min-h-[360px]">
                 {loginMethod === 'email' ? (
-                  <div className="space-y-4 sm:space-y-6">
+                  <form className="space-y-4 sm:space-y-6" onSubmit={handleEmailLogin}>
                     {/* Email Input */}
                     <div>
                       <label className="block text-black font-medium mb-2 sm:mb-3 text-sm sm:text-base"
@@ -95,6 +178,7 @@ export default function EcoShalaLogin() {
                           placeholder="Enter your email"
                           className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50/70 border-0 rounded-2xl text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 focus:bg-white/80 transition-all duration-300 text-sm sm:text-base"
                           style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                          required
                         />
                       </div>
                     </div>
@@ -120,6 +204,7 @@ export default function EcoShalaLogin() {
                           placeholder="Enter your password"
                           className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50/70 border-0 rounded-2xl text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 focus:bg-white/80 transition-all duration-300 text-sm sm:text-base"
                           style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                          required
                         />
                         <button
                           type="button"
@@ -143,18 +228,20 @@ export default function EcoShalaLogin() {
 
                     {/* Sign In Button */}
                     <button
-                      onClick={handleEmailLogin}
-                      className="w-full bg-green-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm sm:text-base"
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-green-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
                       style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
                     >
-                      Sign In
+                      {loading ? "Signing In..." : "Sign In"}
                     </button>
-                  </div>
+                  </form>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-8 sm:py-16">
                     <button
                       onClick={handleGoogleLogin}
-                      className="w-full bg-white/90 border-2 border-gray-300 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold shadow-md hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 transform hover:scale-105 active:scale-95 text-sm sm:text-base"
+                      disabled={loading}
+                      className="w-full bg-white/90 border-2 border-gray-300 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold shadow-md hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 transform hover:scale-105 active:scale-95 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
                       style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
                     >
                       {/* Google SVG */}
@@ -164,7 +251,7 @@ export default function EcoShalaLogin() {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                       </svg>
-                      Continue with Google
+                      {loading ? "Signing In..." : "Continue with Google"}
                     </button>
                   </div>
                 )}
@@ -186,3 +273,4 @@ export default function EcoShalaLogin() {
     </div>
   );
 }
+

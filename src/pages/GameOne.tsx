@@ -4,7 +4,7 @@ import { Leaf, MapPin, Trophy, RotateCcw, Star, Zap, Building2, TreePine, Waves,
 interface Environment {
   id: string;
   name: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   color: string;
   bgGradient: string;
   position: { x: number; y: number };

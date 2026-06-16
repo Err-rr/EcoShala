@@ -1,25 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
-  Mail,
-  Lock,
   Eye,
   EyeOff,
   User,
   School,
-  BookOpen,
-  GraduationCap,
-  Users,
 } from 'lucide-react';
+import { FirebaseError } from "firebase/app";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
+import { signupStudent, signupTeacher } from "@/lib/auth";
+import { getCurrentUserProfile } from "@/lib/userService";
+import { toast } from "sonner";
+
+type StudentForm = {
+  name: string;
+  email: string;
+  institution: string;
+  studentClass: string;
+  rollNo: string;
+  password: string;
+  confirmPassword: string;
+  agreeTerms: boolean;
+};
+
+type TeacherForm = {
+  name: string;
+  email: string;
+  institution: string;
+  teachingClasses: string;
+  password: string;
+  confirmPassword: string;
+  agreeTerms: boolean;
+};
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [isTeacher, setIsTeacher] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Student form state
-  const [studentData, setStudentData] = useState({
+  const [studentData, setStudentData] = useState<StudentForm>({
     name: '',
     email: '',
     institution: '',
@@ -31,7 +56,7 @@ export default function Signup() {
   });
 
   // Teacher form state
-  const [teacherData, setTeacherData] = useState({
+  const [teacherData, setTeacherData] = useState<TeacherForm>({
     name: '',
     email: '',
     institution: '',
@@ -47,6 +72,31 @@ export default function Signup() {
       document.body.style.overflow = '';
     };
   }, []);
+
+  const mapError = (errorValue: unknown): string => {
+    if (errorValue instanceof FirebaseError) {
+      switch (errorValue.code) {
+        case "auth/email-already-in-use":
+          return "That email is already registered.";
+        case "auth/invalid-email":
+          return "Please enter a valid email address.";
+        case "auth/weak-password":
+          return "Please use a stronger password with at least 6 characters.";
+        case "auth/operation-not-allowed":
+          return "Email/password authentication is not enabled.";
+        case "auth/popup-closed-by-user":
+          return "Google sign-in was closed before it finished.";
+        default:
+          return "We couldn't create your account right now.";
+      }
+    }
+
+    if (errorValue instanceof Error) {
+      return errorValue.message;
+    }
+
+    return "We couldn't create your account right now.";
+  };
 
   const toggleUserType = () => {
     setIsTeacher(!isTeacher);
@@ -77,26 +127,120 @@ export default function Signup() {
            agreeTerms;
   };
 
-  const handleStudentSubmit = (e) => {
+  const googleStudentReady = () => {
+    const { name, email, institution, studentClass, rollNo, agreeTerms } = studentData;
+    return name.trim() !== '' && email.trim() !== '' && institution.trim() !== '' && studentClass.trim() !== '' && rollNo.trim() !== '' && agreeTerms;
+  };
+
+  const googleTeacherReady = () => {
+    const { name, email, institution, teachingClasses, agreeTerms } = teacherData;
+    return name.trim() !== '' && email.trim() !== '' && institution.trim() !== '' && teachingClasses.trim() !== '' && agreeTerms;
+  };
+
+  const saveGoogleProfile = async (uid: string) => {
+    if (isTeacher) {
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        role: "teacher",
+        name: teacherData.name.trim(),
+        email: teacherData.email.trim(),
+        institution: teacherData.institution.trim(),
+        teachingClasses: teacherData.teachingClasses.trim(),
+        ecoPoints: 0,
+        createdAt: serverTimestamp(),
+      });
+      return;
+    }
+
+    await setDoc(doc(db, "users", uid), {
+      uid,
+      role: "student",
+      name: studentData.name.trim(),
+      email: studentData.email.trim(),
+      institution: studentData.institution.trim(),
+      studentClass: studentData.studentClass.trim(),
+      rollNo: studentData.rollNo.trim(),
+      ecoPoints: 0,
+      level: 1,
+      createdAt: serverTimestamp(),
+    });
+  };
+
+  const handleStudentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateStudentForm()) {
-      alert('Please fill in all required fields and ensure passwords match.');
+      toast.error("Please fill in all required fields and ensure passwords match.");
       return;
     }
-    console.log('Student signup:', studentData);
+
+    setLoading(true);
+    try {
+      await signupStudent(studentData.email, studentData.password, {
+        name: studentData.name,
+        email: studentData.email,
+        institution: studentData.institution,
+        studentClass: studentData.studentClass,
+        rollNo: studentData.rollNo
+      });
+      toast.success("Student account created successfully.");
+      navigate("/dashboard", { replace: true });
+    } catch (errorValue) {
+      toast.error(mapError(errorValue));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleTeacherSubmit = (e) => {
+  const handleTeacherSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateTeacherForm()) {
-      alert('Please fill in all required fields and ensure passwords match.');
+      toast.error("Please fill in all required fields and ensure passwords match.");
       return;
     }
-    console.log('Teacher signup:', teacherData);
+
+    setLoading(true);
+    try {
+      await signupTeacher(teacherData.email, teacherData.password, {
+        name: teacherData.name,
+        email: teacherData.email,
+        institution: teacherData.institution,
+        teachingClasses: teacherData.teachingClasses
+      });
+      toast.success("Teacher account created successfully.");
+      navigate("/teacher-dashboard", { replace: true });
+    } catch (errorValue) {
+      toast.error(mapError(errorValue));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignup = (userType) => {
-    console.log(`Google signup attempted for: ${userType}`);
+  const handleGoogleSignup = async (userType: string) => {
+    if (userType === "student" ? !googleStudentReady() : !googleTeacherReady()) {
+      toast.error("Please complete the role details and accept the terms before continuing.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(auth, provider);
+      const existingProfile = await getCurrentUserProfile(credential.user.uid);
+
+      if (existingProfile) {
+        toast.success("Account already exists. Redirecting...");
+        navigate(existingProfile.role === "student" ? "/dashboard" : "/teacher-dashboard", { replace: true });
+        return;
+      }
+
+      await saveGoogleProfile(credential.user.uid);
+      toast.success(`${userType === "student" ? "Student" : "Teacher"} account created successfully.`);
+      navigate(userType === "student" ? "/dashboard" : "/teacher-dashboard", { replace: true });
+    } catch (errorValue) {
+      toast.error(mapError(errorValue));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -135,7 +279,8 @@ export default function Signup() {
                   <div className="flex justify-center mb-4">
                     <button 
                       onClick={() => handleGoogleSignup('student')}
-                      className="flex items-center justify-center gap-3 w-full max-w-xs bg-white border-2 border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 text-sm"
+                      disabled={loading}
+                      className="flex items-center justify-center gap-3 w-full max-w-xs bg-white border-2 border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -143,7 +288,7 @@ export default function Signup() {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                       </svg>
-                      Continue with Google
+                      {loading ? "Signing Up..." : "Continue with Google"}
                     </button>
                   </div>
 
@@ -266,14 +411,14 @@ export default function Signup() {
 
                     <button
                       type="submit"
-                      disabled={!validateStudentForm()}
+                      disabled={loading || !validateStudentForm()}
                       className={`w-full py-2 sm:py-2.5 rounded-lg font-semibold transition-all duration-300 text-xs sm:text-sm ${
-                        validateStudentForm() 
+                        validateStudentForm() && !loading
                           ? 'bg-green-600 text-white hover:bg-green-700 transform hover:scale-105' 
                           : 'bg-gray-400 text-gray-200 cursor-not-allowed'
                       }`}
                     >
-                      SIGN UP
+                      {loading ? "SIGNING UP..." : "SIGN UP"}
                     </button>
                   </form>
                 </div>
@@ -322,7 +467,8 @@ export default function Signup() {
                   <div className="flex justify-center mb-4">
                     <button 
                       onClick={() => handleGoogleSignup('teacher')}
-                      className="flex items-center justify-center gap-3 w-full max-w-xs bg-white border-2 border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 text-sm"
+                      disabled={loading}
+                      className="flex items-center justify-center gap-3 w-full max-w-xs bg-white border-2 border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -330,7 +476,7 @@ export default function Signup() {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                       </svg>
-                      Continue with Google
+                      {loading ? "Signing Up..." : "Continue with Google"}
                     </button>
                   </div>
 
@@ -435,14 +581,14 @@ export default function Signup() {
 
                     <button
                       type="submit"
-                      disabled={!validateTeacherForm()}
+                      disabled={loading || !validateTeacherForm()}
                       className={`w-full py-2 sm:py-2.5 rounded-lg font-semibold transition-all duration-300 text-xs sm:text-sm ${
-                        validateTeacherForm() 
+                        validateTeacherForm() && !loading
                           ? 'bg-green-600 text-white hover:bg-green-700 transform hover:scale-105' 
                           : 'bg-gray-400 text-gray-200 cursor-not-allowed'
                       }`}
                     >
-                      SIGN UP
+                      {loading ? "SIGNING UP..." : "SIGN UP"}
                     </button>
                   </form>
                 </div>

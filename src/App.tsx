@@ -3,10 +3,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import StudentRoute from "@/components/StudentRoute";
+import TeacherRoute from "@/components/TeacherRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import QuestPage from "./pages/QuestPage";
-import Login from "./pages/login";  
+import Login from "./pages/login";
 import LevelUp from "./pages/LevelUp";
 import ToDo from "./pages/ToDo";
 import Notes from "./pages/Notes";
@@ -25,9 +29,9 @@ import PrivacyPolicy from "./pages/privacy";
 import Community from "./pages/community";
 import Rewards from "./pages/rewards";
 import Geo from "./pages/Geo";
-
+import StudentDashboard from "./pages/StudentDashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
 import { Chatbot } from "./components/Chatbot";
-
 
 const queryClient = new QueryClient();
 
@@ -36,34 +40,66 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/quest" element={<QuestPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/levelup" element={<LevelUp />} />
-          <Route path="/Signup" element={<Signup />} /> 
-          <Route path="/todo" element={<ToDo />} />
-           <Route path="/quiz" element={<Quiz />} />
-          <Route path="/notes" element={<Notes />} /> {/* ✅ fixed */}
-          <Route path="*" element={<NotFound />} />
-          <Route path="/game" element={<GameOne />} />
-          <Route path="/gametwo" element={<GameTwo />} />
-          <Route path="/gamefour" element={<GameFour />} />
-          <Route path="/gamethree" element={<GameThree />} />
-           <Route path="/activity" element={<Activity />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/planthealth" element={<PLantHealth />} />
-          <Route path="/trash" element={<Trash />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/rewards" element={<Rewards />} />
-          <Route path="/geo" element={<Geo />} />
-
-        </Routes>
-        <Chatbot />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/quest" element={<QuestPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/Signup" element={<Signup />} />
+            <Route path="/levelup" element={<LevelUp />} />
+            <Route
+              path="/dashboard"
+              element={
+                <StudentRoute>
+                  <StudentDashboard />
+                </StudentRoute>
+              }
+            />
+            <Route
+              path="/teacher-dashboard"
+              element={
+                <TeacherRoute>
+                  <TeacherDashboard />
+                </TeacherRoute>
+              }
+            />
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <Leaderboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/todo" element={<ToDo />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/notes" element={<Notes />} />
+            <Route path="/game" element={<GameOne />} />
+            <Route path="/gametwo" element={<GameTwo />} />
+            <Route path="/gamefour" element={<GameFour />} />
+            <Route path="/gamethree" element={<GameThree />} />
+            <Route path="/activity" element={<Activity />} />
+            <Route path="/planthealth" element={<PLantHealth />} />
+            <Route path="/trash" element={<Trash />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/community" element={<Community />} />
+            <Route
+              path="/rewards"
+              element={
+                <ProtectedRoute>
+                  <Rewards />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/geo" element={<Geo />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Chatbot />
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
