@@ -180,7 +180,7 @@ const LeafGuard = () => {
             setPredictions(prediction);
             if (user) {
               try {
-                await awardPoints(user.uid, 50, "plant-health");
+                await awardPoints(user.uid, 50, "Plant Health Check");
               } catch (awardError) {
                 console.error("Failed to award plant health points:", awardError);
               }

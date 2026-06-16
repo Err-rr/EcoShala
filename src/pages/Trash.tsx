@@ -63,7 +63,7 @@ const Trash: React.FC = () => {
         .filter((line) => line.length > 0);
 
       setIdeas(formattedIdeas.length > 0 ? formattedIdeas : fallbackIdeas);
-      await awardPoints(user.uid, 50, "upcycling");
+      await awardPoints(user.uid, 50, "Trash to Treasure");
     } catch (error) {
       console.error(error);
       setIdeas(fallbackIdeas);
@@ -206,4 +206,3 @@ const Trash: React.FC = () => {
 };
 
 export default Trash;
-

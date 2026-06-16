@@ -1,4 +1,11 @@
-import { collection, doc, increment, runTransaction, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  increment,
+  runTransaction,
+  serverTimestamp,
+  type Transaction,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 export const calculateLevel = (points: number): number => {
@@ -21,6 +28,48 @@ export const calculateLevel = (points: number): number => {
   return 1;
 };
 
+export const applyPointAward = async (
+  transaction: Transaction,
+  uid: string,
+  points: number,
+  reason: string,
+): Promise<number> => {
+  const userRef = doc(db, "users", uid);
+  const snapshot = await transaction.get(userRef);
+
+  if (!snapshot.exists()) {
+    throw new Error("User not found.");
+  }
+
+  const data = snapshot.data() as Record<string, unknown>;
+  const currentPoints = typeof data.ecoPoints === "number" && Number.isFinite(data.ecoPoints) ? data.ecoPoints : 0;
+  const nextPoints = currentPoints + points;
+
+  transaction.update(userRef, {
+    ecoPoints: increment(points),
+    level: calculateLevel(nextPoints),
+  });
+
+  const activityRef = doc(collection(db, "activities"));
+  transaction.set(activityRef, {
+    uid,
+    type: reason,
+    points,
+    reason,
+    timestamp: serverTimestamp(),
+  });
+
+  const pointHistoryRef = doc(collection(db, "pointHistory"));
+  transaction.set(pointHistoryRef, {
+    uid,
+    points,
+    reason,
+    timestamp: serverTimestamp(),
+  });
+
+  return nextPoints;
+};
+
 export const awardPoints = async (
   uid: string,
   points: number,
@@ -30,33 +79,7 @@ export const awardPoints = async (
     throw new Error("Points must be a finite number.");
   }
 
-  const userRef = doc(db, "users", uid);
-
   return runTransaction(db, async (transaction) => {
-    const snapshot = await transaction.get(userRef);
-
-    if (!snapshot.exists()) {
-      throw new Error("User not found.");
-    }
-
-    const data = snapshot.data() as Record<string, unknown>;
-    const currentPoints = typeof data.ecoPoints === "number" && Number.isFinite(data.ecoPoints) ? data.ecoPoints : 0;
-    const nextPoints = currentPoints + points;
-
-    transaction.update(userRef, {
-      ecoPoints: increment(points),
-      level: calculateLevel(nextPoints),
-    });
-
-    const activityRef = doc(collection(db, "activities"));
-    transaction.set(activityRef, {
-      uid,
-      type: reason,
-      points,
-      reason,
-      timestamp: serverTimestamp(),
-    });
-
-    return nextPoints;
+    return applyPointAward(transaction, uid, points, reason);
   });
 };

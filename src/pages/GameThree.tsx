@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from "@/context/AuthContext";
+import { awardQuestPoints } from "@/lib/progressService";
 
 interface Species {
   name: string;
@@ -14,6 +16,7 @@ interface Species {
 interface CollectedSpecies extends Species {}
 
 const GameThree: React.FC = () => {
+  const { user } = useAuth();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [collectedSpecies, setCollectedSpecies] = useState<CollectedSpecies[]>([]);
@@ -137,6 +140,11 @@ const GameThree: React.FC = () => {
 
     if (selectedIndex === currentSpecies.correct) {
       setScore(prev => prev + 10);
+      if (user) {
+        awardQuestPoints(user.uid, `game-three-${currentSpecies.name}`, 10, "Correct Answer").catch((error) => {
+          console.error("Failed to award quiz points:", error);
+        });
+      }
 
       // Add to collection if not already collected
       if (!collectedSpecies.find(s => s.name === currentSpecies.name)) {
@@ -153,6 +161,11 @@ const GameThree: React.FC = () => {
       setAnsweredCurrentQuestion(false);
     } else {
       // Game completed
+      if (user) {
+        awardQuestPoints(user.uid, "game-three-final", 20, "Quest Completed").catch((error) => {
+          console.error("Failed to award quest completion bonus:", error);
+        });
+      }
       setGameCompleted(true);
     }
   };

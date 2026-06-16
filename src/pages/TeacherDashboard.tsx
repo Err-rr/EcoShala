@@ -56,7 +56,7 @@ const TeacherDashboard = () => {
             <div>
               <p className="text-sm font-medium uppercase tracking-wide text-green-600">Welcome back</p>
               <h1 className="mt-2 text-3xl font-bold text-gray-900">{profile.name}</h1>
-              <p className="mt-2 text-gray-600">Your teacher profile is synced directly from Firestore.</p>
+              <p className="mt-2 text-gray-600">Your teacher profile is ready below.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl bg-green-50 p-4">

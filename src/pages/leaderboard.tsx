@@ -122,7 +122,7 @@ const Leaderboard = () => {
         <div className="rounded-3xl bg-white shadow-xl">
           <div className="border-b border-green-100 px-6 py-5">
             <h1 className="text-2xl font-bold text-gray-900">Top EcoShala users</h1>
-            <p className="mt-1 text-sm text-gray-500">Live Firestore ranking of the top 50 users by eco points.</p>
+            <p className="mt-1 text-sm text-gray-500">Updated in real time with the top 50 users by eco points.</p>
           </div>
 
           {loading ? (
@@ -178,4 +178,3 @@ const Leaderboard = () => {
 };
 
 export default Leaderboard;
-

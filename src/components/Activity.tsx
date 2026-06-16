@@ -44,7 +44,7 @@ const Activity = () => {
         const imageRef = ref(storage, storagePath);
         await uploadBytes(imageRef, file);
         const points = 25;
-        await awardPoints(user.uid, points, "eco-activity");
+        await awardPoints(user.uid, points, "Eco Activity Upload");
 
         const reader = new FileReader();
         reader.onload = (event) => {

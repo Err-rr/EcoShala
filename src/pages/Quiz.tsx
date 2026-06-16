@@ -155,7 +155,7 @@ const Quiz: React.FC = () => {
         setFeedbackMessage(`Correct!${timeBonus}`);
         if (user && !awardedQuestionsRef.current.has(currentQuestion)) {
           awardedQuestionsRef.current.add(currentQuestion);
-          awardPoints(user.uid, 10, "quiz").catch((error) => {
+          awardPoints(user.uid, 10, "Correct Quiz Answer").catch((error) => {
             console.error("Failed to award quiz points:", error);
           });
         }
@@ -171,7 +171,7 @@ const Quiz: React.FC = () => {
         if (user && !completionAwardedRef.current) {
           completionAwardedRef.current = true;
           const earnedPoints = (score * 10) + 20;
-          await awardPoints(user.uid, 20, "quiz");
+          await awardPoints(user.uid, 20, "Quiz Completed");
           await saveQuizResult(earnedPoints);
         }
         setShowResults(true);

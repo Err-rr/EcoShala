@@ -53,7 +53,7 @@ export default function Geo() {
     });
 
     if (user) {
-      awardPoints(user.uid, 50, "eco-explorer").catch((error) => {
+      awardPoints(user.uid, 50, "Eco Explorer").catch((error) => {
         console.error("Failed to award eco explorer points:", error);
       });
     }

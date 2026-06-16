@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { usePointHistory } from "@/hooks/usePointHistory";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -14,11 +15,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
+const PointHistoryContent = ({
+  history,
+  loading,
+}: {
+  history: ReturnType<typeof usePointHistory>["history"];
+  loading: boolean;
+}) => {
+  return (
+    <div className="w-72 space-y-2">
+      <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recent points</div>
+      {loading ? (
+        <div className="text-sm text-muted-foreground">Loading history...</div>
+      ) : history.length === 0 ? (
+        <div className="text-sm text-muted-foreground">No point history yet.</div>
+      ) : (
+        history.map((entry) => (
+          <div key={entry.id} className="rounded-md bg-muted/60 px-3 py-2">
+            <div className="text-sm font-medium text-foreground">
+              {entry.points >= 0 ? "+" : ""}
+              {entry.points} {entry.reason}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
 
 export const Header = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { profile } = useUserProfile();
+  const { history, loading: historyLoading } = usePointHistory();
   const dashboardPath = profile?.role === "teacher" ? "/teacher-dashboard" : "/dashboard";
 
   useEffect(() => {
@@ -56,12 +87,19 @@ export const Header = () => {
 
       {/* Right side: eco-coin, user, buttons */}
       <div className="flex items-center gap-6">
-        <div className="eco-coin flex items-center gap-2">
-          <Leaf className="w-5 h-5 text-eco-green" />
-          <span className="font-semibold text-eco-green">
-            {profile?.ecoPoints ?? 0}
-          </span>
-        </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="eco-coin flex items-center gap-2">
+              <Leaf className="w-5 h-5 text-eco-green" />
+              <span className="font-semibold text-eco-green">
+                {profile?.ecoPoints ?? 0}
+              </span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" align="end">
+            <PointHistoryContent history={history} loading={historyLoading} />
+          </TooltipContent>
+        </Tooltip>
 
         {user ? (
           <DropdownMenu>
@@ -80,7 +118,14 @@ export const Header = () => {
                   <div className="font-semibold text-sm">{profile?.name ?? user.displayName ?? "EcoShala User"}</div>
                   <div className="text-xs text-muted-foreground break-all">{profile?.email ?? user.email ?? ""}</div>
                   <div className="text-xs text-muted-foreground">Role: {profile?.role ?? "student"}</div>
-                  <div className="text-xs text-muted-foreground">Eco Points: {profile?.ecoPoints ?? 0}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-xs text-muted-foreground">Eco Points: {profile?.ecoPoints ?? 0}</div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" align="start">
+                      <PointHistoryContent history={history} loading={historyLoading} />
+                    </TooltipContent>
+                  </Tooltip>
                   <div className="text-xs text-muted-foreground">Level: {profile?.level ?? 1}</div>
                 </div>
               </DropdownMenuLabel>

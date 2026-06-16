@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAuth } from "@/context/AuthContext";
+import { awardQuestPoints } from "@/lib/progressService";
 
 const GameTwo = () => {
+  const { user } = useAuth();
   const [gameState, setGameState] = useState('menu'); // 'menu', 'playing', 'completed'
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
@@ -118,6 +121,11 @@ const GameTwo = () => {
       setScore(prev => prev + totalPoints);
       setStreak(prev => prev + 1);
       setFeedback(`✓ Correct! +${totalPoints} points ${streak > 0 ? `(${streak}x streak!)` : ''}`);
+      if (user) {
+        awardQuestPoints(user.uid, `game-two-${draggedItem}`, totalPoints, "Correct Placement").catch((error) => {
+          console.error("Failed to award placement points:", error);
+        });
+      }
       
       if (streak > 0 && streak % 3 === 0) {
         setFeedback(`🔥 Streak Master! +${totalPoints} points`);
@@ -152,6 +160,11 @@ const GameTwo = () => {
     if (allPlaced) {
       const completionBonus = 500 + (streak * 50);
       setScore(prev => prev + completionBonus);
+      if (user) {
+        awardQuestPoints(user.uid, "game-two-final", completionBonus, "Quest Completed").catch((error) => {
+          console.error("Failed to award quest completion bonus:", error);
+        });
+      }
       setGameState('completed');
     }
   };

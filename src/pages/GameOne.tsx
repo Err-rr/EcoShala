@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Leaf, MapPin, Trophy, RotateCcw, Star, Zap, Building2, TreePine, Waves, Home } from 'lucide-react';
+import { useAuth } from "@/context/AuthContext";
+import { awardQuestPoints } from "@/lib/progressService";
 
 interface Environment {
   id: string;
@@ -135,6 +137,7 @@ const scenarios: Scenario[] = [
 type GameState = 'map' | 'scenario' | 'result' | 'final';
 
 const EcoExplorerGame: React.FC = () => {
+  const { user } = useAuth();
   const [gameState, setGameState] = useState<GameState>('map');
   const [currentEnvironment, setCurrentEnvironment] = useState<Environment | null>(null);
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null);
@@ -154,7 +157,7 @@ const EcoExplorerGame: React.FC = () => {
     setGameState('scenario');
   };
 
-  const handleOptionClick = (option: { text: string; isEcoFriendly: boolean; feedback: string }) => {
+  const handleOptionClick = async (option: { text: string; isEcoFriendly: boolean; feedback: string }) => {
     setIsCorrect(option.isEcoFriendly);
     setFeedbackText(option.feedback);
     setShowFeedback(true);
@@ -162,11 +165,20 @@ const EcoExplorerGame: React.FC = () => {
     if (option.isEcoFriendly) {
       setScore(prev => prev + 25);
       setAnimateScore(true);
+      if (user && currentScenario) {
+        awardQuestPoints(user.uid, `game-one-${currentScenario.id}`, 25, "Quest Completed").catch((error) => {
+          console.error("Failed to award quest points:", error);
+        });
+      }
       setTimeout(() => setAnimateScore(false), 600);
     }
   };
 
   const handleContinue = () => {
+    const nextCompletedCount = currentEnvironment && !completedEnvironments.has(currentEnvironment.id)
+      ? completedEnvironments.size + 1
+      : completedEnvironments.size;
+
     if (currentEnvironment) {
       setCompletedEnvironments(prev => new Set([...prev, currentEnvironment.id]));
     }
@@ -175,7 +187,12 @@ const EcoExplorerGame: React.FC = () => {
     setGameState('result');
     
     setTimeout(() => {
-      if (completedEnvironments.size === 3) {
+      if (nextCompletedCount === 4) {
+        if (user) {
+          awardQuestPoints(user.uid, "game-one-final", 50, "Quest Completed").catch((error) => {
+            console.error("Failed to award completion bonus:", error);
+          });
+        }
         setGameState('final');
       } else {
         setGameState('map');

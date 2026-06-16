@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Play, BookOpen, Home } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { awardLecturePoints } from "@/lib/progressService";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface LessonCard {
   id: number;
@@ -15,6 +20,8 @@ interface LessonCard {
 }
 
 const EcoShala: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [lessons, setLessons] = useState<LessonCard[]>([
     { 
       id: 1, 
@@ -257,6 +264,7 @@ const EcoShala: React.FC = () => {
   const [celebrate, setCelebrate] = useState<{open: boolean; points: number; title: string}>({
     open: false, points: 0, title: ''
   });
+  const [awardingLessonId, setAwardingLessonId] = useState<number | null>(null);
 
   // Simple confetti canvas
   const confettiRef = useRef<HTMLCanvasElement | null>(null);
@@ -326,6 +334,37 @@ const EcoShala: React.FC = () => {
 
   const stats = calculateStats();
 
+  useEffect(() => {
+    const loadCompletedLessons = async () => {
+      if (!user) {
+        return;
+      }
+
+      const completionsQuery = query(
+        collection(db, "lectureCompletions"),
+        where("uid", "==", user.uid),
+      );
+      const snapshot = await getDocs(completionsQuery);
+      const completedLessonIds = new Set(
+        snapshot.docs
+          .map((documentSnapshot) => Number(documentSnapshot.data().itemId))
+          .filter((lessonId) => Number.isFinite(lessonId)),
+      );
+
+      setLessons((previousLessons) =>
+        previousLessons.map((lesson) => ({
+          ...lesson,
+          completed: completedLessonIds.has(lesson.id),
+          locked: lesson.id !== 1 ? !completedLessonIds.has(lesson.id - 1) && !completedLessonIds.has(lesson.id) : false,
+        })),
+      );
+    };
+
+    loadCompletedLessons().catch((error) => {
+      console.error("Failed to load completed lessons:", error);
+    });
+  }, [user]);
+
   const handleLessonClick = (lesson: LessonCard) => {
     if (!lesson.locked) {
       setSelectedLesson(lesson);
@@ -338,26 +377,44 @@ const EcoShala: React.FC = () => {
 
   const handleAttemptQuiz = () => {
     if (selectedLesson) {
-      // Update lessons: complete current, unlock next
-      setLessons(prev => prev.map((lesson) => {
-        if (lesson.id === selectedLesson.id) {
-          return { ...lesson, completed: true, isActive: false };
+      const completeLesson = async () => {
+        setAwardingLessonId(selectedLesson.id);
+
+        try {
+          let wasAwarded = true;
+
+          if (user) {
+            const result = await awardLecturePoints(
+              user.uid,
+              selectedLesson.id.toString(),
+              selectedLesson.points || 0,
+              "Lecture Completed",
+            );
+            wasAwarded = result.awarded;
+          }
+
+          setLessons((previousLessons) => previousLessons.map((lesson) => {
+            if (lesson.id === selectedLesson.id) {
+              return { ...lesson, completed: true, isActive: false };
+            }
+            if (lesson.id === selectedLesson.id + 1) {
+              return { ...lesson, locked: false, isActive: true };
+            }
+            return lesson;
+          }));
+
+          setCelebrate({ open: true, points: wasAwarded ? (selectedLesson.points || 0) : 0, title: selectedLesson.title });
+          setSelectedLesson(null);
+          setTimeout(() => fireConfetti(), 50);
+          setTimeout(() => setCelebrate((current) => ({ ...current, open: false })), 2500);
+        } finally {
+          setAwardingLessonId(null);
         }
-        if (lesson.id === selectedLesson.id + 1) {
-          return { ...lesson, locked: false, isActive: true };
-        }
-        return lesson;
-      }));
+      };
 
-      // Open celebration modal instead of alert
-      setCelebrate({ open: true, points: selectedLesson.points || 0, title: selectedLesson.title });
-      setSelectedLesson(null);
-
-      // Trigger confetti
-      setTimeout(() => fireConfetti(), 50);
-
-      // Auto-close celebration after 2.5s
-      setTimeout(() => setCelebrate(c => ({ ...c, open: false })), 2500);
+      completeLesson().catch((error) => {
+        console.error("Failed to complete lecture:", error);
+      });
     }
   };
 
@@ -368,7 +425,7 @@ const EcoShala: React.FC = () => {
   };
 
   const handleGoHome = () => {
-    alert('🏠 Navigating to home page...');
+    navigate("/");
   };
 
   const handleDotClick = (index: number) => {
@@ -1002,9 +1059,9 @@ const EcoShala: React.FC = () => {
                   Watch Tutorial
                 </button>
                 
-                <button style={styles.quizButton} onClick={handleAttemptQuiz}>
+                <button style={styles.quizButton} onClick={handleAttemptQuiz} disabled={awardingLessonId === selectedLesson.id}>
                   <BookOpen size={20} />
-                  Completed
+                  {awardingLessonId === selectedLesson.id ? 'Completing...' : 'Completed'}
                 </button>
               </div>
             </div>
