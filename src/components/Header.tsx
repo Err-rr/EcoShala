@@ -81,6 +81,7 @@ export const Header = () => {
                   <div className="text-xs text-muted-foreground break-all">{profile?.email ?? user.email ?? ""}</div>
                   <div className="text-xs text-muted-foreground">Role: {profile?.role ?? "student"}</div>
                   <div className="text-xs text-muted-foreground">Eco Points: {profile?.ecoPoints ?? 0}</div>
+                  <div className="text-xs text-muted-foreground">Level: {profile?.level ?? 1}</div>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

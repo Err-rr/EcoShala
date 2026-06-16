@@ -49,6 +49,7 @@ export const signupTeacher = async (email: string, password: string, data: Teach
     institution: data.institution,
     teachingClasses: data.teachingClasses,
     ecoPoints: 0,
+    level: 1,
     createdAt: serverTimestamp(),
   });
 

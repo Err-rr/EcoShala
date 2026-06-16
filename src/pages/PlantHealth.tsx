@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAuth } from "@/context/AuthContext";
+import { awardPoints } from "@/lib/pointsService";
 
 const LeafGuard = () => {
+  const { user } = useAuth();
   const [model, setModel] = useState(null);
   const [webcam, setWebcam] = useState(null);
   const [isWebcamMode, setIsWebcamMode] = useState(false);
@@ -175,6 +178,13 @@ const LeafGuard = () => {
           setTimeout(async () => {
             const prediction = await currentModel.predict(img);
             setPredictions(prediction);
+            if (user) {
+              try {
+                await awardPoints(user.uid, 50, "plant-health");
+              } catch (awardError) {
+                console.error("Failed to award plant health points:", awardError);
+              }
+            }
           }, 100); // Small delay for better performance
         } catch (error) {
           console.error('Error predicting image:', error);

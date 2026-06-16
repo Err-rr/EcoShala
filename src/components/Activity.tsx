@@ -1,34 +1,69 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Camera, Award, Leaf, CheckCircle, Globe, X } from 'lucide-react';
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { awardPoints } from "@/lib/pointsService";
 
 const Activity = () => {
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const { user } = useAuth();
+  const { profile } = useUserProfile();
+  const [uploadedImages, setUploadedImages] = useState<Array<{
+    id: number;
+    src: string;
+    fileName: string;
+    points: number;
+    timestamp: string;
+  }>>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [ecoPoints, setEcoPoints] = useState(150); // Starting points
-  const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const ecoPoints = profile?.ecoPoints ?? 0;
 
-  const handleFileSelect = (files) => {
+  const handleFileSelect = async (files: FileList | File[]) => {
+    if (!user) {
+      alert("Please log in to upload eco activities.");
+      return;
+    }
+
     const fileArray = Array.from(files);
-    fileArray.forEach((file) => {
-      if (file.type.startsWith('image/')) {
+    const imageFiles = fileArray.filter((file) => file.type.startsWith("image/"));
+
+    if (imageFiles.length === 0) {
+      alert("Please upload an image file.");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      for (const file of imageFiles) {
+        const storagePath = `eco-activities/${user.uid}/${Date.now()}-${file.name}`;
+        const imageRef = ref(storage, storagePath);
+        await uploadBytes(imageRef, file);
+        const points = 25;
+        await awardPoints(user.uid, points, "eco-activity");
+
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = (event) => {
           const newImage = {
             id: Date.now() + Math.random(),
-            src: e.target.result,
+            src: event.target?.result as string,
             fileName: file.name,
-            points: Math.floor(Math.random() * 20) + 10, // Random points 10-30
+            points,
             timestamp: new Date().toLocaleString()
           };
-          setUploadedImages(prev => [...prev, newImage]);
-          setEcoPoints(prev => prev + newImage.points);
+          setUploadedImages((previous) => [...previous, newImage]);
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 3000);
         };
         reader.readAsDataURL(file);
       }
-    });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleDrop = (e) => {
@@ -56,7 +91,6 @@ const Activity = () => {
     const imageToRemove = uploadedImages.find(img => img.id === id);
     if (imageToRemove) {
       setUploadedImages(prev => prev.filter(img => img.id !== id));
-      setEcoPoints(prev => prev - imageToRemove.points);
     }
   };
 
@@ -95,22 +129,22 @@ const Activity = () => {
 
         {/* Upload Area */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-lg border border-green-200">
-          <div
-            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
-              isDragging 
-                ? 'border-green-500 bg-green-50' 
-                : 'border-green-300 hover:border-green-500 hover:bg-green-50'
-            }`}
+            <div
+              className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
+                isDragging 
+                  ? 'border-green-500 bg-green-50' 
+                  : 'border-green-300 hover:border-green-500 hover:bg-green-50'
+              }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onClick={() => fileInputRef.current?.click()}
           >
-            <div className="flex flex-col items-center gap-4">
-              <div className="bg-green-100 p-6 rounded-full">
-                <Upload className="w-12 h-12 text-green-600" />
-              </div>
-              <div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="bg-green-100 p-6 rounded-full">
+                  <Upload className="w-12 h-12 text-green-600" />
+                </div>
+                <div>
                 <h3 className="text-xl font-semibold text-green-800 mb-2">
                   Upload Your Eco Activity Images
                 </h3>
@@ -131,6 +165,9 @@ const Activity = () => {
                     <span>Eco projects</span>
                   </div>
                 </div>
+                {isUploading ? (
+                  <p className="text-green-600 font-medium">Uploading and awarding points...</p>
+                ) : null}
               </div>
             </div>
           </div>

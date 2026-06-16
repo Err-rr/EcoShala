@@ -147,6 +147,7 @@ export default function Signup() {
         institution: teacherData.institution.trim(),
         teachingClasses: teacherData.teachingClasses.trim(),
         ecoPoints: 0,
+        level: 1,
         createdAt: serverTimestamp(),
       });
       return;
