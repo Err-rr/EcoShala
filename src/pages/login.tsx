@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
@@ -16,6 +16,16 @@ export default function EcoShalaLogin() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   const mapError = (errorValue: unknown): string => {
     if (errorValue instanceof FirebaseError) {
@@ -92,19 +102,22 @@ export default function EcoShalaLogin() {
 
   return (
     <div
-      className="min-h-screen flex flex-col overflow-hidden relative"
+      className="fixed inset-0 flex flex-col overflow-hidden relative"
       style={{
-        backgroundColor: '#e8f0e8'
+        background: 'linear-gradient(145deg, #eef8ef 0%, #f4faf4 48%, #e8f5e8 100%)'
       }}
     >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffffcc_0%,transparent_45%)]" />
+      <div className="absolute inset-0 opacity-50 bg-[linear-gradient(135deg,rgba(128,176,136,0.08)_0%,transparent_35%,transparent_65%,rgba(128,176,136,0.06)_100%)]" />
+
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col">
+      <div className="relative z-10 flex-1 flex flex-col min-h-full">
         {/* Header */}
         <div className="p-4 sm:p-6">
           <Link to="/">
             <button
-              className="flex items-center gap-2 text-green-600 hover:text-green-800 transition-colors w-fit"
-              style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+              className="flex items-center gap-2 text-green-700 hover:text-green-900 transition-colors w-fit text-sm sm:text-base"
+              style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', letterSpacing: '0.04em' }}
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               Back to Home
@@ -113,16 +126,16 @@ export default function EcoShalaLogin() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-3 sm:py-6">
           <div className="w-full max-w-md">
             {/* Title */}
             <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-2 sm:mb-4"
-                  style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-2 sm:mb-4 tracking-[0.12em]"
+                  style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                 Welcome back
               </h1>
-              <p className="text-gray-800 text-base sm:text-lg"
-                 style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+              <p className="text-foreground/70 text-base sm:text-lg"
+                 style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                 Sign in to your EcoShala account
               </p>
             </div>
@@ -132,17 +145,17 @@ export default function EcoShalaLogin() {
             ) : null}
 
             {/* Glassmorphic Login Container */}
-            <div className="bg-white/40 backdrop-blur-lg rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/30 transform transition-all duration-300 hover:shadow-3xl">
+            <div className="bg-white/50 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_60px_rgba(88,126,92,0.12)] p-6 sm:p-8 border border-white/60 transform transition-all duration-300">
               {/* Login Method Toggle */}
-              <div className="flex mb-6 sm:mb-8 bg-gray-100/60 rounded-2xl p-1">
+              <div className="flex mb-6 sm:mb-8 bg-white/55 rounded-2xl p-1 border border-white/60">
                 <button
                   onClick={() => setLoginMethod('email')}
                   className={`flex-1 py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base ${
                     loginMethod === 'email'
-                      ? 'bg-green-600 text-white shadow-lg transform scale-105'
+                      ? 'bg-eco-green text-white shadow-lg transform scale-105'
                       : 'text-gray-700 hover:text-gray-900'
                   }`}
-                  style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                  style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                 >
                   Email
                 </button>
@@ -150,10 +163,10 @@ export default function EcoShalaLogin() {
                   onClick={() => setLoginMethod('google')}
                   className={`flex-1 py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base ${
                     loginMethod === 'google'
-                      ? 'bg-green-600 text-white shadow-lg transform scale-105'
+                      ? 'bg-eco-green text-white shadow-lg transform scale-105'
                       : 'text-gray-700 hover:text-gray-900'
                   }`}
-                  style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                  style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                 >
                   Google
                 </button>
@@ -165,8 +178,8 @@ export default function EcoShalaLogin() {
                   <form className="space-y-4 sm:space-y-6" onSubmit={handleEmailLogin}>
                     {/* Email Input */}
                     <div>
-                      <label className="block text-black font-medium mb-2 sm:mb-3 text-sm sm:text-base"
-                             style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+                      <label className="block text-foreground font-medium mb-2 sm:mb-3 text-sm sm:text-base"
+                             style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                         Email Address
                       </label>
                       <div className="relative">
@@ -176,8 +189,8 @@ export default function EcoShalaLogin() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="Enter your email"
-                          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50/70 border-0 rounded-2xl text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 focus:bg-white/80 transition-all duration-300 text-sm sm:text-base"
-                          style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-white/70 border border-white/60 rounded-2xl text-foreground placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-eco-green/40 focus:bg-white transition-all duration-300 text-sm sm:text-base shadow-sm"
+                          style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                           required
                         />
                       </div>
@@ -186,12 +199,12 @@ export default function EcoShalaLogin() {
                     {/* Password Input */}
                     <div>
                       <div className="flex items-center justify-between mb-2 sm:mb-3">
-                        <label className="block text-black font-medium text-sm sm:text-base"
-                               style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+                        <label className="block text-foreground font-medium text-sm sm:text-base"
+                               style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                           Password
                         </label>
-                        <a href="#" className="text-green-600 hover:text-green-800 text-xs sm:text-sm transition-colors"
-                           style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+                        <a href="#" className="text-green-700 hover:text-green-900 text-xs sm:text-sm transition-colors"
+                           style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                           Forgot password?
                         </a>
                       </div>
@@ -202,8 +215,8 @@ export default function EcoShalaLogin() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Enter your password"
-                          className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50/70 border-0 rounded-2xl text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 focus:bg-white/80 transition-all duration-300 text-sm sm:text-base"
-                          style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                          className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-white/70 border border-white/60 rounded-2xl text-foreground placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-eco-green/40 focus:bg-white transition-all duration-300 text-sm sm:text-base shadow-sm"
+                          style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                           required
                         />
                         <button
@@ -220,8 +233,8 @@ export default function EcoShalaLogin() {
                     <div className="flex items-center">
                       <input type="checkbox" id="remember"
                              className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
-                      <label htmlFor="remember" className="ml-2 sm:ml-3 text-black text-sm sm:text-base"
-                             style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+                      <label htmlFor="remember" className="ml-2 sm:ml-3 text-foreground text-sm sm:text-base"
+                             style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                         Remember me
                       </label>
                     </div>
@@ -230,8 +243,8 @@ export default function EcoShalaLogin() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-green-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
-                      style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                      className="w-full bg-eco-green text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold hover:bg-eco-green/90 focus:outline-none focus:ring-4 focus:ring-eco-green/20 transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99] text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-eco-green/10"
+                      style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                     >
                       {loading ? "Signing In..." : "Sign In"}
                     </button>
@@ -241,8 +254,8 @@ export default function EcoShalaLogin() {
                     <button
                       onClick={handleGoogleLogin}
                       disabled={loading}
-                      className="w-full bg-white/90 border-2 border-gray-300 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold shadow-md hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 transform hover:scale-105 active:scale-95 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
-                      style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}
+                      className="w-full bg-white/85 border border-white/70 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold shadow-md hover:bg-white hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-eco-green/15 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 transform hover:scale-[1.01] active:scale-[0.99] text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
+                      style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
                     >
                       {/* Google SVG */}
                       <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24">
@@ -259,10 +272,10 @@ export default function EcoShalaLogin() {
             </div>
 
             {/* Footer */}
-            <div className="text-center mt-6 sm:mt-8">
-              <p className="text-gray-700 text-sm sm:text-base" style={{ fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+            <div className="mt-6 pb-4 text-center">
+              <p className="text-foreground/75 text-sm sm:text-base" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                 Don't have an account?{' '}
-                <a href="/signup" className="text-green-600 hover:text-green-800 font-semibold transition-colors">
+                <a href="/signup" className="text-green-700 hover:text-green-900 font-semibold transition-colors">
                   Sign up
                 </a>
               </p>
@@ -273,4 +286,3 @@ export default function EcoShalaLogin() {
     </div>
   );
 }
-

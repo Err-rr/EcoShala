@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { Leaf, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -88,49 +88,65 @@ export const Header = () => {
       {/* Right side: profile controls */}
       <div className="flex items-center gap-6">
         {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-10 h-10 rounded-full bg-eco-green/20 flex items-center justify-center">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback className="bg-eco-green/20 text-eco-green">
-                    <User className="w-6 h-6" />
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuLabel>
-                <div className="space-y-1">
-                  <div className="font-semibold text-sm">{profile?.name ?? user.displayName ?? "EcoShala User"}</div>
-                  <div className="text-xs text-muted-foreground break-all">{profile?.email ?? user.email ?? ""}</div>
-                  <div className="text-xs text-muted-foreground">Role: {profile?.role ?? "student"}</div>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="text-xs text-muted-foreground">Eco Points: {profile?.ecoPoints ?? 0}</div>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" align="start">
-                      <PointHistoryContent history={history} loading={historyLoading} />
-                    </TooltipContent>
-                  </Tooltip>
-                  <div className="text-xs text-muted-foreground">Level: {profile?.level ?? 1}</div>
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="eco-coin flex items-center gap-2">
+                  <Leaf className="w-5 h-5 text-eco-green" />
+                  <span className="font-semibold text-eco-green">
+                    {profile?.ecoPoints ?? 0}
+                  </span>
                 </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate(dashboardPath)}>Dashboard</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/leaderboard")}>Leaderboard</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/rewards")}>Rewards</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={async () => {
-                  await logout();
-                  navigate("/");
-                }}
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="end">
+                <PointHistoryContent history={history} loading={historyLoading} />
+              </TooltipContent>
+            </Tooltip>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-10 h-10 rounded-full bg-eco-green/20 flex items-center justify-center">
+                  <Avatar className="w-10 h-10">
+                    <AvatarFallback className="bg-eco-green/20 text-eco-green">
+                      <User className="w-6 h-6" />
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel>
+                  <div className="space-y-1">
+                    <div className="font-semibold text-sm">{profile?.name ?? user.displayName ?? "EcoShala User"}</div>
+                    <div className="text-xs text-muted-foreground break-all">{profile?.email ?? user.email ?? ""}</div>
+                    <div className="text-xs text-muted-foreground">Role: {profile?.role ?? "student"}</div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-xs text-muted-foreground">Eco Points: {profile?.ecoPoints ?? 0}</div>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" align="start">
+                        <PointHistoryContent history={history} loading={historyLoading} />
+                      </TooltipContent>
+                    </Tooltip>
+                    <div className="text-xs text-muted-foreground">Level: {profile?.level ?? 1}</div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate(dashboardPath)}>Dashboard</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/leaderboard")}>Leaderboard</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/rewards")}>Rewards</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await logout();
+                    navigate("/");
+                  }}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
         ) : (
           <div className="flex gap-3">
             <Link to="/login">
