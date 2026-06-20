@@ -373,7 +373,7 @@ const GameTwo = () => {
                 </h3>
                 
                 {/* Pyramid Structure */}
-                <div className="relative mx-auto" style={{ width: '600px', height: '450px' }}>
+                <div className="relative mx-auto w-full max-w-[600px]" style={{ width: 'min(600px, 100%)', height: 'min(450px, 70vw)' }}>
                   
                   {/* SVG Pyramid Outline */}
                   <svg className="absolute inset-0 pointer-events-none" width="600" height="450">

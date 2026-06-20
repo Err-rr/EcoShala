@@ -25,7 +25,7 @@ const PointHistoryContent = ({
   loading: boolean;
 }) => {
   return (
-    <div className="w-72 space-y-2">
+    <div className="w-[min(18rem,calc(100vw-2rem))] space-y-2">
       <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recent points</div>
       {loading ? (
         <div className="text-sm text-muted-foreground">Loading history...</div>

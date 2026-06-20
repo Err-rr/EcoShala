@@ -87,7 +87,7 @@ export default function Geo() {
       {/* Popup Form */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[calc(100vw-2rem)] sm:w-96 max-w-md">
             <h2 className="text-xl font-bold mb-4">Choose Location & Cleanliness</h2>
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
               <label className="flex flex-col">
@@ -144,7 +144,7 @@ export default function Geo() {
         </div>
       ) : (
         <LoadScript googleMapsApiKey={"AIzaSyBV-XRgC894KFSU7UZ6J1if4UD6zckcj4g"}>
-          <div className="w-full flex-1 h-96 rounded shadow-md">
+          <div className="w-full flex-1 h-[60vh] min-h-96 rounded shadow-md">
             <GoogleMap
               mapContainerStyle={{ width: "100%", height: "100%" }}
               center={{ lat: location.lat, lng: location.lng }}

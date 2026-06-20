@@ -166,7 +166,7 @@ const EcoExplorerGame: React.FC = () => {
       setScore(prev => prev + 25);
       setAnimateScore(true);
       if (user && currentScenario) {
-        awardQuestPoints(user.uid, `game-one-${currentScenario.id}`, 25, "Quest Completed").catch((error) => {
+        awardQuestPoints(user.uid, `game-one-${currentScenario.id}`, 25, "Correct Quest Choice").catch((error) => {
           console.error("Failed to award quest points:", error);
         });
       }
