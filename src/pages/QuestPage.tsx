@@ -29,6 +29,7 @@ const QuestPage: React.FC = () => {
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [floatingLeaves, setFloatingLeaves] = useState<FloatingLeaf[]>([]);
   const [boardScale, setBoardScale] = useState(1);
+  const [viewportHeight, setViewportHeight] = useState(700);
 
   const levels: Level[] = [
     { id: 1, status: 'completed', icon: '1', title: 'Introduction to Sustainability', position: { left: 70, top: 470 } },
@@ -63,9 +64,13 @@ const QuestPage: React.FC = () => {
 
   useEffect(() => {
     const updateScale = () => {
-      const availableWidth = window.innerWidth - 32;
-      const scale = Math.min(1, availableWidth / 1200);
-      setBoardScale(Math.max(0.35, scale));
+      const isMobile = window.innerWidth <= 768;
+      const availableWidth = window.innerWidth - (isMobile ? 0 : 32);
+      const availableHeight = window.innerHeight - (isMobile ? 0 : 32);
+      const scale = isMobile ? 1 : Math.min(1, availableWidth / 1200);
+
+      setBoardScale(scale);
+      setViewportHeight(isMobile ? Math.max(700, Math.round(window.innerHeight)) : Math.round(700 * scale));
     };
 
     updateScale();
@@ -143,7 +148,7 @@ const QuestPage: React.FC = () => {
       <div
         className="game-board-viewport"
         style={{
-          height: `${700 * boardScale}px`,
+          height: `${viewportHeight}px`,
         }}
       >
         <div
@@ -217,9 +222,10 @@ const QuestPage: React.FC = () => {
 
         .game-board-viewport {
           width: 100%;
+          height: 100vh;
           display: flex;
           justify-content: center;
-          align-items: flex-start;
+          align-items: center;
           overflow: hidden;
         }
 
@@ -520,6 +526,22 @@ const QuestPage: React.FC = () => {
         }
 
         @media (max-width: 768px) {
+          .game-board-container {
+            padding: 0;
+          }
+
+          .game-board-viewport {
+            height: 100vh !important;
+            justify-content: flex-start;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+          }
+
+          .game-board {
+            border-radius: 0;
+          }
+
           .level-selection-title {
             font-size: 1.6rem;
           }
