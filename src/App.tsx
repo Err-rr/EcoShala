@@ -8,6 +8,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import StudentRoute from "@/components/StudentRoute";
 import TeacherRoute from "@/components/TeacherRoute";
+import IntroSplash from "@/components/IntroSplash";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import QuestPage from "./pages/QuestPage";
@@ -44,13 +45,28 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
+          <IntroSplash />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/quest" element={<QuestPage />} />
+            <Route
+              path="/quest"
+              element={
+                <ProtectedRoute>
+                  <QuestPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/Signup" element={<Signup />} />
-            <Route path="/levelup" element={<LevelUp />} />
+            <Route
+              path="/levelup"
+              element={
+                <ProtectedRoute>
+                  <LevelUp />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={
@@ -75,19 +91,96 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route path="/todo" element={<ToDo />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/game" element={<GameOne />} />
-            <Route path="/gametwo" element={<GameTwo />} />
-            <Route path="/gamefour" element={<GameFour />} />
-            <Route path="/gamethree" element={<GameThree />} />
-            <Route path="/activity" element={<Activity />} />
-            <Route path="/planthealth" element={<PLantHealth />} />
-            <Route path="/trash" element={<Trash />} />
+            <Route
+              path="/todo"
+              element={
+                <ProtectedRoute>
+                  <ToDo />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz"
+              element={
+                <ProtectedRoute>
+                  <Quiz />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute>
+                  <Notes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/game"
+              element={
+                <ProtectedRoute>
+                  <GameOne />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gametwo"
+              element={
+                <ProtectedRoute>
+                  <GameTwo />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gamefour"
+              element={
+                <ProtectedRoute>
+                  <GameFour />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gamethree"
+              element={
+                <ProtectedRoute>
+                  <GameThree />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/activity"
+              element={
+                <ProtectedRoute>
+                  <Activity />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planthealth"
+              element={
+                <ProtectedRoute>
+                  <PLantHealth />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trash"
+              element={
+                <ProtectedRoute>
+                  <Trash />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/community" element={<Community />} />
+            <Route
+              path="/community"
+              element={
+                <ProtectedRoute>
+                  <Community />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/rewards"
               element={
@@ -96,7 +189,14 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route path="/geo" element={<Geo />} />
+            <Route
+              path="/geo"
+              element={
+                <ProtectedRoute>
+                  <Geo />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Chatbot />

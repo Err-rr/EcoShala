@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Leaf, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -85,22 +85,8 @@ export const Header = () => {
         </h1>
       </div>
 
-      {/* Right side: eco-coin, user, buttons */}
+      {/* Right side: profile controls */}
       <div className="flex items-center gap-6">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="eco-coin flex items-center gap-2">
-              <Leaf className="w-5 h-5 text-eco-green" />
-              <span className="font-semibold text-eco-green">
-                {profile?.ecoPoints ?? 0}
-              </span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" align="end">
-            <PointHistoryContent history={history} loading={historyLoading} />
-          </TooltipContent>
-        </Tooltip>
-
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -146,24 +132,17 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <>
-            <div className="w-10 h-10 rounded-full bg-eco-green/20 flex items-center justify-center">
-              <User className="w-6 h-6 text-eco-green" />
-            </div>
+          <div className="flex gap-3">
+            <Link to="/login">
+              <Button variant="outline">Login</Button>
+            </Link>
 
-            {/* Buttons */}
-            <div className="flex gap-3">
-              <Link to="/login">
-                <Button variant="outline">Login</Button>
-              </Link>
-
-              <Link to="/signup">
-                <Button className="bg-eco-green text-white hover:bg-eco-green/90">
-                  Signup
-                </Button>
-              </Link>
-            </div>
-          </>
+            <Link to="/signup">
+              <Button className="bg-eco-green text-white hover:bg-eco-green/90">
+                Signup
+              </Button>
+            </Link>
+          </div>
         )}
       </div>
     </header>
