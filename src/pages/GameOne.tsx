@@ -257,7 +257,7 @@ const EcoExplorerGame: React.FC = () => {
       </div>
 
       {/* Game Title - Top Left */}
-      <div className="absolute top-6 left-6 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-2xl px-6 py-4 text-white shadow-lg z-20">
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 max-w-[calc(100vw-2rem)] bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-white shadow-lg z-20">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <Leaf className="text-emerald-400 w-8 h-8" />
           EcoLearn
@@ -266,7 +266,7 @@ const EcoExplorerGame: React.FC = () => {
       </div>
 
       {/* Score and Progress - Top Right */}
-      <div className="absolute top-6 right-6 space-y-3 z-20">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 space-y-3 z-20 w-[calc(100vw-2rem)] sm:w-auto">
         {/* Score Display */}
         <div className={`bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-400/40 rounded-xl px-6 py-3 shadow-lg transition-all duration-300 ${animateScore ? 'scale-110 border-yellow-300' : ''}`}>
           <div className="flex items-center gap-2">
@@ -288,8 +288,8 @@ const EcoExplorerGame: React.FC = () => {
       </div>
       
       {/* Centered Game Map */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 z-10">
-        <div className="relative bg-gradient-to-br from-emerald-900/20 to-blue-900/20 backdrop-blur-sm border border-emerald-400/30 rounded-3xl p-8 shadow-2xl w-full max-w-4xl h-96 overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-4 z-10">
+        <div className="relative bg-gradient-to-br from-emerald-900/20 to-blue-900/20 backdrop-blur-sm border border-emerald-400/30 rounded-3xl p-4 sm:p-8 shadow-2xl w-full max-w-4xl h-[78vh] sm:h-96 overflow-hidden">
           {/* Light overlay just for the game area */}
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-black/10 to-black/20"></div>
           
@@ -354,7 +354,7 @@ const EcoExplorerGame: React.FC = () => {
         {/* Scenario background effects */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30"></div>
         
-        <div className="max-w-2xl mx-auto pt-8 relative z-10 p-4">
+        <div className="max-w-2xl mx-auto pt-6 sm:pt-8 relative z-10 p-3 sm:p-4">
           <div className="text-center mb-8">
             <div className="inline-block p-6 bg-white/20 backdrop-blur-sm rounded-3xl border border-white/30 shadow-2xl">
               <div className="mb-4">
@@ -365,7 +365,7 @@ const EcoExplorerGame: React.FC = () => {
           </div>
 
           {/* Score Display for Scenario Page */}
-          <div className="absolute top-6 right-6 bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2 sm:px-4 shadow-lg">
             <div className="text-lg font-semibold text-gray-700">
               Score: {score}/100
             </div>

@@ -279,7 +279,7 @@ const EcoSwipe = () => {
         `}
       </style>
 
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto px-2 sm:px-0">
         {/* Header */}
         <div className="text-center mb-6 pixel-border bg-yellow-100 p-4">
           <h1 className="text-4xl font-bold text-green-800 mb-2" style={{ fontFamily: "'Press Start 2P', cursive" }}>ECO SWIPE</h1>
@@ -297,7 +297,7 @@ const EcoSwipe = () => {
         )}
 
         {/* Card container */}
-        <div className="relative h-96 mb-8">
+        <div className="relative h-[24rem] sm:h-96 mb-8">
           {gameState === 'playing' && currentCard && (
             <div 
               ref={cardRef}
@@ -356,16 +356,16 @@ const EcoSwipe = () => {
 
         {/* Controls */}
         {gameState === 'playing' && (
-          <div className="flex justify-center space-x-8">
+          <div className="flex justify-center gap-4 sm:space-x-8">
             <button 
               onClick={() => handleSwipe('left')}
-              className="pixel-button w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white text-2xl"
+              className="pixel-button w-14 h-14 sm:w-16 sm:h-16 bg-red-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl"
             >
               ❌
             </button>
             <button 
               onClick={() => handleSwipe('right')}
-              className="pixel-button w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl"
+              className="pixel-button w-14 h-14 sm:w-16 sm:h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl"
             >
               ✅
             </button>

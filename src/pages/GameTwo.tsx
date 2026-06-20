@@ -199,9 +199,9 @@ const GameTwo = () => {
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       
       {/* Header */}
-      <div className="max-w-7xl mx-auto mb-6 p-6">
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-6 flex justify-between items-center">
-          <div>
+      <div className="max-w-7xl mx-auto mb-6 p-3 sm:p-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
+          <div className="min-w-0">
             <h1 className="text-3xl font-semibold text-gray-800 mb-1">
               Food Pyramid Builder
             </h1>
@@ -209,7 +209,7 @@ const GameTwo = () => {
               Level {level}: {currentLevel?.title}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-left lg:text-right">
             <div className="text-2xl font-semibold text-gray-700 mb-1">
               {score.toLocaleString()} pts
             </div>
@@ -230,8 +230,8 @@ const GameTwo = () => {
 
       {/* Menu Screen */}
       {gameState === 'menu' && (
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
+        <div className="max-w-5xl mx-auto px-3 sm:px-6">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-12 text-center">
             
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
               Food Pyramid Builder
@@ -243,7 +243,7 @@ const GameTwo = () => {
             </div>
             
             {/* Feature cards */}
-            <div className="grid md:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
               <div className="bg-green-50 rounded-xl border border-green-200 p-6 hover:shadow-md transition-shadow">
                 <div className="text-3xl mb-3">🌱</div>
                 <h3 className="font-semibold text-gray-800 text-base mb-2">Producers</h3>
@@ -271,7 +271,7 @@ const GameTwo = () => {
 
             <button
               onClick={startGame}
-              className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-4 px-8 text-lg rounded-xl transition-colors shadow-lg hover:shadow-xl"
+              className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-4 px-8 text-base sm:text-lg rounded-xl transition-colors shadow-lg hover:shadow-xl"
             >
               Start Game
             </button>
@@ -281,7 +281,7 @@ const GameTwo = () => {
 
       {/* Game Screen */}
       {gameState === 'playing' && (
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6">
           
           {/* Feedback Display */}
           {feedback && (
@@ -292,9 +292,9 @@ const GameTwo = () => {
 
           {/* Hints Panel */}
           {showHints && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
               <h3 className="font-semibold text-gray-800 mb-4 text-lg">Ecosystem Rules</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-gray-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
                 <div className="flex items-center space-x-2 text-sm">
                   <span className="text-yellow-600">⚡</span>
                   <span>Energy flows UP the pyramid</span>
@@ -316,17 +316,17 @@ const GameTwo = () => {
           )}
 
           {/* Main Game Layout - Side by Side */}
-          <div className="grid grid-cols-12 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
             
             {/* Left Side - Organism Inventory */}
-            <div className="col-span-4">
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-6 h-full">
+            <div className="lg:col-span-4">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 h-full">
                 <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
                   Available Organisms
                 </h3>
                 
                 {/* Scrollable organism list */}
-                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                <div className="space-y-3 max-h-80 lg:max-h-96 overflow-y-auto pr-2">
                   {getUnplacedOrganisms().map(orgKey => {
                     const organism = organisms[orgKey];
                     const typeColors = {
@@ -366,14 +366,14 @@ const GameTwo = () => {
             </div>
 
             {/* Right Side - Food Pyramid */}
-            <div className="col-span-8">
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-8">
-                <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center">
+            <div className="lg:col-span-8">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8 overflow-x-auto">
+                <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6 sm:mb-8 text-center">
                   Food Pyramid
                 </h3>
                 
                 {/* Pyramid Structure */}
-                <div className="relative mx-auto w-full max-w-[600px]" style={{ width: 'min(600px, 100%)', height: 'min(450px, 70vw)' }}>
+                <div className="relative mx-auto w-[600px] max-w-full h-[450px] scale-[0.55] sm:scale-75 lg:scale-100 origin-top">
                   
                   {/* SVG Pyramid Outline */}
                   <svg className="absolute inset-0 pointer-events-none" width="600" height="450">

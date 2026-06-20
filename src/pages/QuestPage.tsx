@@ -28,6 +28,7 @@ const QuestPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [floatingLeaves, setFloatingLeaves] = useState<FloatingLeaf[]>([]);
+  const [boardScale, setBoardScale] = useState(1);
 
   const levels: Level[] = [
     { id: 1, status: 'completed', icon: '1', title: 'Introduction to Sustainability', position: { left: 70, top: 470 } },
@@ -58,6 +59,18 @@ const QuestPage: React.FC = () => {
 
     const interval = setInterval(createFloatingLeaf, 4000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const availableWidth = window.innerWidth - 32;
+      const scale = Math.min(1, availableWidth / 1200);
+      setBoardScale(Math.max(0.35, scale));
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
   }, []);
 
   const handleLevelClick = (level: Level): void => {
@@ -127,7 +140,20 @@ const QuestPage: React.FC = () => {
 
   return (
     <div className="game-board-container">
-      <div className="game-board">
+      <div
+        className="game-board-viewport"
+        style={{
+          height: `${700 * boardScale}px`,
+        }}
+      >
+        <div
+          className="game-board"
+          style={{
+            width: "1200px",
+            height: "700px",
+            transform: `scale(${boardScale})`,
+          }}
+        >
         <div className="grass-texture"></div>
         
         {/* Header */}
@@ -176,6 +202,7 @@ const QuestPage: React.FC = () => {
             🍃
           </div>
         ))}
+        </div>
       </div>
 
       <style>{`
@@ -183,22 +210,29 @@ const QuestPage: React.FC = () => {
           width: 100%;
           min-height: 100vh;
           background: #2d4a3a;
-          padding: 20px;
+          padding: 12px;
           font-family: 'Arial', sans-serif;
+          overflow-x: hidden;
         }
 
-      .game-board {
-  width: 100%;
-  max-width: 1200px;
-  height: 700px;
-  margin: 0 auto;
-  background: url("https://cdna.artstation.com/p/assets/images/images/000/274/998/large/Sorcery_Concept03.jpg?1414573459")
-    no-repeat center center / cover;
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
+        .game-board-viewport {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          overflow: hidden;
+        }
+
+        .game-board {
+          margin: 0 auto;
+          background: url("https://cdna.artstation.com/p/assets/images/images/000/274/998/large/Sorcery_Concept03.jpg?1414573459")
+            no-repeat center center / cover;
+          position: relative;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          transform-origin: top center;
+        }
 
 
         .header {
@@ -486,26 +520,25 @@ const QuestPage: React.FC = () => {
         }
 
         @media (max-width: 768px) {
-          .game-board {
-            height: 500px;
-            margin: 10px;
-          }
-          
           .level-selection-title {
-            font-size: 2rem;
+            font-size: 1.6rem;
           }
           
           .level-stone {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
           }
           
           .level-number {
-            font-size: 18px;
+            font-size: 16px;
           }
           
           .eco-icon {
-            font-size: 20px;
+            font-size: 18px;
+          }
+
+          .subtitle {
+            font-size: 0.95rem;
           }
         }
       `}</style>

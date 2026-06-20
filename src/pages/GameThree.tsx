@@ -248,18 +248,18 @@ const GameThree: React.FC = () => {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto p-6 relative z-10">
+      <div className="max-w-6xl mx-auto p-3 sm:p-6 relative z-10">
         {/* Clean Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 text-gray-900">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-gray-900">
             Species Quest
           </h1>
           <div className="w-24 h-1 bg-green-400 mx-auto mb-4 rounded" />
-          <p className="text-xl text-gray-600">Discover India's Amazing Wildlife</p>
+          <p className="text-base sm:text-xl text-gray-600">Discover India's Amazing Wildlife</p>
         </div>
 
       {/* Stats Bar */}
-<div className="flex justify-center gap-6 mb-12 flex-wrap">
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 sm:mb-12">
   {[
     { title: 'Discovered', value: collectedSpecies.length, icon: '🎯' },
     { title: 'Score', value: score, icon: '⭐' },
@@ -267,9 +267,9 @@ const GameThree: React.FC = () => {
   ].map((stat) => (
     <div 
       key={stat.title}
-      className="bg-white p-6 rounded-xl border-2 border-green-300 relative overflow-hidden 
+      className="bg-white p-4 sm:p-6 rounded-xl border-2 border-green-300 relative overflow-hidden 
                  transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg
-                 w-48 min-h-[150px] flex flex-col justify-center"
+                 min-h-[130px] flex flex-col justify-center"
     >
       <div className="text-center">
         <div className="text-3xl mb-2">{stat.icon}</div>
@@ -291,15 +291,15 @@ const GameThree: React.FC = () => {
 
         {/* Game Area */}
         {currentSpecies && (
-          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
             {/* Quiz Section */}
-            <div className="lg:col-span-2 bg-white rounded-2xl p-8 border-2 border-green-300 relative overflow-hidden shadow-lg">
+            <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-8 border-2 border-green-300 relative overflow-hidden shadow-lg">
               <div className="absolute top-0 left-0 right-0 h-1 bg-green-400 rounded-t-2xl" />
               
               <div className="text-gray-900 relative">
                 {/* Species Image */}
                 <div 
-                  className="w-full h-80 rounded-xl mb-6 flex items-center justify-center text-white text-center p-6 relative overflow-hidden border-2 border-green-300 shadow-md"
+                  className="w-full h-56 sm:h-80 rounded-xl mb-6 flex items-center justify-center text-white text-center p-4 sm:p-6 relative overflow-hidden border-2 border-green-300 shadow-md"
                   style={{
                     backgroundImage: `url(${currentSpecies.imageUrl})`,
                     backgroundSize: 'cover',
@@ -309,7 +309,7 @@ const GameThree: React.FC = () => {
                 />
                 
                 {/* Question */}
-                <div className="text-2xl font-bold mb-6 text-center p-4 bg-green-50 rounded-xl border border-green-200">
+                <div className="text-lg sm:text-2xl font-bold mb-6 text-center p-4 bg-green-50 rounded-xl border border-green-200">
                   What is the natural habitat of the {currentSpecies.name}?
                 </div>
 
@@ -320,7 +320,7 @@ const GameThree: React.FC = () => {
                       key={index}
                       onClick={() => selectAnswer(index)}
                       className={`
-                        p-4 rounded-xl font-semibold text-lg transition-all duration-300 border-2
+                        p-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 border-2
                         ${answeredCurrentQuestion 
                           ? index === currentSpecies.correct 
                             ? 'bg-green-500 text-white border-green-500 shadow-lg' 
@@ -348,9 +348,9 @@ const GameThree: React.FC = () => {
             </div>
 
             {/* Collection Panel */}
-            <div className="bg-white rounded-2xl p-6 border-2 border-green-300 max-h-96 overflow-y-auto relative shadow-lg">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border-2 border-green-300 max-h-96 overflow-y-auto relative shadow-lg">
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Collection</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Collection</h2>
                 <div className="w-16 h-1 bg-green-400 mx-auto rounded" />
               </div>
 
